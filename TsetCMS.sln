@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestCMS.Helper", "TestCMS.H
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestCMS.Test", "TestCMS.Test\TestCMS.Test.csproj", "{A551A88C-F93D-45FA-A4B4-58D46888AA2F}"
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "TestCMS.Database", "TestCMS.Database\TestCMS.Database.sqlproj", "{B1C3513B-69D1-45FD-8118-C81B8D558485}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,12 @@ Global
 		{A551A88C-F93D-45FA-A4B4-58D46888AA2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A551A88C-F93D-45FA-A4B4-58D46888AA2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A551A88C-F93D-45FA-A4B4-58D46888AA2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1C3513B-69D1-45FD-8118-C81B8D558485}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1C3513B-69D1-45FD-8118-C81B8D558485}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1C3513B-69D1-45FD-8118-C81B8D558485}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{B1C3513B-69D1-45FD-8118-C81B8D558485}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1C3513B-69D1-45FD-8118-C81B8D558485}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1C3513B-69D1-45FD-8118-C81B8D558485}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
