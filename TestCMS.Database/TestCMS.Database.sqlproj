@@ -64,5 +64,6 @@
     <Build Include="dbo\Tables\Catecory.sql" />
     <Build Include="dbo\Tables\Product.sql" />
     <Build Include="dbo\Tables\OrderList.sql" />
+    <Build Include="dbo\Tables\Cart.sql" />
   </ItemGroup>
 </Project>

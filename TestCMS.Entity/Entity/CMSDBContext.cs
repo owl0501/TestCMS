@@ -17,6 +17,7 @@ namespace TestCMS.Entity.Entity
         {
         }
 
+        public virtual DbSet<Cart> Carts { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<OrderList> OrderLists { get; set; }
         public virtual DbSet<Product> Products { get; set; }
@@ -26,7 +27,7 @@ namespace TestCMS.Entity.Entity
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=127.0.0.1;Database=CMSDB;Persist Security Info=True;User ID=sa;Password=Pw0922435545");
+                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=CMSDB;User ID=sa;Password=Pw0922435545;Connect Timeout=60;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
             }
         }
 
@@ -34,51 +35,56 @@ namespace TestCMS.Entity.Entity
         {
             modelBuilder.HasAnnotation("Relational:Collation", "Chinese_Taiwan_Stroke_CI_AS");
 
+            modelBuilder.Entity<Cart>(entity =>
+            {
+                entity.ToTable("Cart");
+
+                entity.Property(e => e.ProductId).HasColumnName("Product_id");
+
+                entity.HasOne(d => d.Product)
+                    .WithMany(p => p.Carts)
+                    .HasForeignKey(d => d.ProductId)
+                    .HasConstraintName("FK__Cart__Product_id__4CA06362");
+            });
+
             modelBuilder.Entity<Category>(entity =>
             {
                 entity.ToTable("Category");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
+                    .HasMaxLength(20);
             });
 
             modelBuilder.Entity<OrderList>(entity =>
             {
                 entity.ToTable("OrderList");
 
-                entity.Property(e => e.Id)
+                entity.Property(e => e.OrderId)
                     .HasMaxLength(15)
                     .IsUnicode(false)
+                    .HasColumnName("OrderID")
                     .IsFixedLength(true);
 
                 entity.Property(e => e.ProductId).HasColumnName("Product_id");
 
-                entity.Property(e => e.Stock).HasColumnName("stock");
-
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.OrderLists)
                     .HasForeignKey(d => d.ProductId)
-                    .HasConstraintName("FK__OrderList__Produ__44FF419A");
+                    .HasConstraintName("FK__OrderList__Produ__4BAC3F29");
             });
 
             modelBuilder.Entity<Product>(entity =>
             {
                 entity.ToTable("Product");
 
-                entity.Property(e => e.Image)
-                    .HasMaxLength(300)
-                    .IsUnicode(false);
+                entity.Property(e => e.Image).HasMaxLength(300);
 
-                entity.Property(e => e.Intro)
-                    .HasMaxLength(1000)
-                    .IsUnicode(false);
+                entity.Property(e => e.Intro).HasMaxLength(1000);
 
                 entity.Property(e => e.Name)
                     .IsRequired()
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
+                    .HasMaxLength(20);
 
                 entity.Property(e => e.ReleaseDate).HasColumnType("date");
 

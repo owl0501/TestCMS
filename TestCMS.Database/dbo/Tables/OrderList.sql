@@ -1,7 +1,8 @@
 ﻿--訂單
 Create table OrderList
 (
-	Id char(15) not null primary key,
+	Id int not null primary key identity,
 	Product_id int references Product(Id),
-	stock int
+	Amount int,
+	OrderID char(15)
 )

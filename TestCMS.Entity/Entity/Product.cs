@@ -9,6 +9,7 @@ namespace TestCMS.Entity.Entity
     {
         public Product()
         {
+            Carts = new HashSet<Cart>();
             OrderLists = new HashSet<OrderList>();
         }
 
@@ -20,6 +21,7 @@ namespace TestCMS.Entity.Entity
         public DateTime? ReleaseDate { get; set; }
 
         public virtual Category Category { get; set; }
+        public virtual ICollection<Cart> Carts { get; set; }
         public virtual ICollection<OrderList> OrderLists { get; set; }
     }
 }
