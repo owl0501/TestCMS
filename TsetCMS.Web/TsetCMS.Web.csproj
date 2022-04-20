@@ -13,4 +13,10 @@
     <ProjectReference Include="..\TestCMS.Business\TestCMS.Business.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="C:\Users\windows user\.nuget\packages\nlog.config\4.7.15\contentFiles\any\any\NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

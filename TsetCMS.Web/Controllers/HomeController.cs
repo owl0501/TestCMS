@@ -16,6 +16,12 @@ namespace TsetCMS.Web.Controllers
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
+            _logger.LogTrace("trace");
+            _logger.LogInformation("info");
+            _logger.LogDebug("debug");
+            _logger.LogWarning("waring");
+            _logger.LogError("error");
+
         }
 
         public IActionResult Index()
