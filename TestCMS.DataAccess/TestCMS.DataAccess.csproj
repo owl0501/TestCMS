@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TestCMS.Database\TestCMS.Database.sqlproj" />
+    <ProjectReference Include="..\TestCMS.Entity\TestCMS.Entity.csproj" />
   </ItemGroup>
 
 </Project>
