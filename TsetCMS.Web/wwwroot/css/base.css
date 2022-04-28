@@ -1,0 +1,11 @@
+﻿:root {
+    --base-blue: #142E7C;
+    --dark-blue: #14527C;
+    --hint-blue: #E4F3F9;
+    --sp-blue: #5955C4;
+    --main_red: #DC153E;
+    --func-hight: 60px;
+    /* 最外圍上下左右間距 */
+    --horizontal-margin: 40px;
+    --vertical-margin: 20px;
+}
