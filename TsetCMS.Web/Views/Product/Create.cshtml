@@ -1,0 +1,45 @@
+﻿@model TestCMS.Entity.Entity.Product;
+<div class="main">
+    <h1 class="mb-5">新增產品</h1>
+    <form asp-controller="Product" asp-action="Create">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="d-grid gap-4 fs-2">
+            <div class="row">
+                <label asp-for="Category" class="control-label col-md-3 redstar">產品類型</label>
+                <div class="col-md">
+                    <select class="form-control" asp-for="CategoryId" asp-items="ViewBag.Categories"></select>
+                </div>
+            </div>
+            <div class="row">
+                <label asp-for="Name" class="control-label col-md-3 redstar">產品名稱</label>
+                <div class="col-md">
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </div>
+            <!-- 圖片 -->
+            <div class="row">
+                <label asp-for="Image" class="control-label col-md-3 redstar">圖片</label>
+                <div class="col-md">
+                    <div class="input-group">
+                        <input type="file" class="form-control" id="myimg">
+                        <label class="input-group-text" for="myimg">選擇圖片</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <label asp-for="Intro" class="control-label col-md-3">產品說明</label>
+                <div class="col-md">
+                    <textarea asp-for="Intro" class="form-control"></textarea>
+                </div>
+            </div>
+
+            <div class="form-group d-flex flex-row-reverse">
+                <input type="submit" value="確定" class="btn btn-lg submit-btn" />
+            </div>
+        </div>
+    </form>
+
+</div>
