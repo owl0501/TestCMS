@@ -1,0 +1,28 @@
+﻿@model TestCMS.Entity.VM.HomeVM;
+
+<div class="banner">
+    <h2>尋找最佳方案</h2>
+    <span class="dash"></span>
+    <h4>因應不同產業，提供最適應的解決方案</h4>
+</div>
+<div class="main">
+    <div class="row gx-0">
+        <div class="slide col-lg-2 col-sm-3">
+            @foreach (var item in Model.Categories)
+            {
+                <a class="btn btn-lg slide-btn">@item.Name</a>
+            }
+
+        </div>
+        <div class="wrap col">
+            <div class="func-line col-sm-12">
+                <a asp-action="CreateCategory" class="btn btn-lg func-btn ">新增類別</a>
+                <a asp-action="Create"class="btn btn-lg func-btn ">+新增產品</a>
+            </div>
+
+            <div class="gallery">
+
+            </div>
+        </div>
+    </div>
+</div>
