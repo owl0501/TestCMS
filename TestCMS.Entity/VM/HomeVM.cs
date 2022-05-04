@@ -7,9 +7,9 @@ namespace TestCMS.Entity.VM
     public class HomeVM
     {
         //產品列表
-        public List<Product> Products { get; set; }
+        public List<ProductTable> Products { get; set; }
         //類別集合
-        public List<Category> Categories { get; set; }
+        public List<CategoryTable> Categories { get; set; }
         //待出貨清單數量
         
         //類別查詢
