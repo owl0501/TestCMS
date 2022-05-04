@@ -5,12 +5,12 @@ using System.Collections.Generic;
 
 namespace TestCMS.Entity.Entity
 {
-    public partial class Cart
+    public partial class CartTable
     {
         public int Id { get; set; }
         public int? ProductId { get; set; }
         public int? Amount { get; set; }
 
-        public virtual Product Product { get; set; }
+        public virtual ProductTable Product { get; set; }
     }
 }

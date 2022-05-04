@@ -61,9 +61,12 @@
     <Folder Include="dbo\Script" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="dbo\Tables\Catecory.sql" />
-    <Build Include="dbo\Tables\Product.sql" />
-    <Build Include="dbo\Tables\OrderList.sql" />
-    <Build Include="dbo\Tables\Cart.sql" />
+    <Build Include="dbo\Tables\CatecoryTable.sql" />
+    <Build Include="dbo\Tables\ProductTable.sql" />
+    <Build Include="dbo\Tables\ShippingTable.sql" />
+    <Build Include="dbo\Tables\CartTable.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="TestCMS.Database.refactorlog" />
   </ItemGroup>
 </Project>

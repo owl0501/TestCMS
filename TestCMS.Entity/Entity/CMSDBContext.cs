@@ -17,17 +17,17 @@ namespace TestCMS.Entity.Entity
         {
         }
 
-        public virtual DbSet<Cart> Carts { get; set; }
-        public virtual DbSet<Category> Categories { get; set; }
-        public virtual DbSet<OrderList> OrderLists { get; set; }
-        public virtual DbSet<Product> Products { get; set; }
+        public virtual DbSet<CartTable> CartTable { get; set; }
+        public virtual DbSet<CategoryTable> CategoryTable { get; set; }
+        public virtual DbSet<ProductTable> ProductTable { get; set; }
+        public virtual DbSet<ShippingTable> ShippingTable { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=CMSDB;User ID=sa;Password=Pw0922435545;Connect Timeout=60;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=CMSDB;User ID=sa;Password=Pw0922435545;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
             }
         }
 
@@ -35,48 +35,30 @@ namespace TestCMS.Entity.Entity
         {
             modelBuilder.HasAnnotation("Relational:Collation", "Chinese_Taiwan_Stroke_CI_AS");
 
-            modelBuilder.Entity<Cart>(entity =>
+            modelBuilder.Entity<CartTable>(entity =>
             {
-                entity.ToTable("Cart");
+                entity.ToTable("CartTable");
 
                 entity.Property(e => e.ProductId).HasColumnName("Product_id");
 
                 entity.HasOne(d => d.Product)
-                    .WithMany(p => p.Carts)
+                    .WithMany(p => p.CartTables)
                     .HasForeignKey(d => d.ProductId)
-                    .HasConstraintName("FK__Cart__Product_id__4CA06362");
+                    .HasConstraintName("FK__CartTable__Produ__35BCFE0A");
             });
 
-            modelBuilder.Entity<Category>(entity =>
+            modelBuilder.Entity<CategoryTable>(entity =>
             {
-                entity.ToTable("Category");
+                entity.ToTable("CategoryTable");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(20);
             });
 
-            modelBuilder.Entity<OrderList>(entity =>
+            modelBuilder.Entity<ProductTable>(entity =>
             {
-                entity.ToTable("OrderList");
-
-                entity.Property(e => e.OrderId)
-                    .HasMaxLength(15)
-                    .IsUnicode(false)
-                    .HasColumnName("OrderID")
-                    .IsFixedLength(true);
-
-                entity.Property(e => e.ProductId).HasColumnName("Product_id");
-
-                entity.HasOne(d => d.Product)
-                    .WithMany(p => p.OrderLists)
-                    .HasForeignKey(d => d.ProductId)
-                    .HasConstraintName("FK__OrderList__Produ__4BAC3F29");
-            });
-
-            modelBuilder.Entity<Product>(entity =>
-            {
-                entity.ToTable("Product");
+                entity.ToTable("ProductTable");
 
                 entity.Property(e => e.Image).HasMaxLength(300);
 
@@ -86,13 +68,37 @@ namespace TestCMS.Entity.Entity
                     .IsRequired()
                     .HasMaxLength(20);
 
-                entity.Property(e => e.ReleaseDate).HasColumnType("date");
+                entity.Property(e => e.ReleaseDatetime).HasColumnType("datetime");
+
+                entity.Property(e => e.SupplyStatus)
+                    .IsRequired()
+                    .HasMaxLength(2)
+                    .IsFixedLength(true);
 
                 entity.HasOne(d => d.Category)
-                    .WithMany(p => p.Products)
+                    .WithMany(p => p.ProductTables)
                     .HasForeignKey(d => d.CategoryId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Product__Categor__45F365D3");
+                    .HasConstraintName("FK__ProductTa__Categ__36B12243");
+            });
+
+            modelBuilder.Entity<ShippingTable>(entity =>
+            {
+                entity.ToTable("ShippingTable");
+
+                entity.Property(e => e.ProductId).HasColumnName("Product_id");
+
+                entity.Property(e => e.ShipId)
+                    .IsRequired()
+                    .HasMaxLength(15)
+                    .HasColumnName("ShipID")
+                    .IsFixedLength(true);
+
+                entity.HasOne(d => d.Product)
+                    .WithMany(p => p.ShippingTables)
+                    .HasForeignKey(d => d.ProductId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__ShippingT__Produ__37A5467C");
             });
 
             OnModelCreatingPartial(modelBuilder);
