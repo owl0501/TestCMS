@@ -4,26 +4,29 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TestCMS.Entity.Entity;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using TestCMS.Entity.VM;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
+using TestCMS.Entity.VM;
+using TestCMS.Entity.Entity;
+using TestCMS.Business.Abstract;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace TsetCMS.Web.Controllers
 {
     public class ProductController : Controller
     {
         private readonly CMSDBContext _context;
+        private readonly IProductService _productService;
         private readonly ILogger<ProductController> _logger;
         private readonly string _folder;
-        public ProductController(CMSDBContext context, ILogger<ProductController> logger, IWebHostEnvironment env)
+        public ProductController(CMSDBContext context, ILogger<ProductController> logger, IWebHostEnvironment env, IServiceProvider provider)
         {
             _context = context;
             _logger = logger;
-
+            _productService = provider.GetRequiredService<IProductService>();
             // 預設上傳目錄下(wwwroot\UploadFolder)
             _folder = $@"{env.WebRootPath}\UploadFolder";
 
@@ -37,17 +40,14 @@ namespace TsetCMS.Web.Controllers
             {
                 Categories = await query.ToListAsync()
             };
-            
+
 
             return View(homeVM);
         }
 
-        public IActionResult CreateCategory()
-        {
-            return View();
-        }
 
-        
+
+
 
         [HttpGet]
         public IActionResult Create()
@@ -56,50 +56,35 @@ namespace TsetCMS.Web.Controllers
             ViewData["Categories"] = new SelectList(_context.Set<CategoryTable>(), "Id", "Name");
             return View();
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="product"></param>
+        /// <param name="myimg"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ProductTable product, IFormFile myimg)
         {
-            string altPath;
+            //IFormFile name對應input type=file的name屬性)
+
             if (!Directory.Exists(_folder))
             {
                 DirectoryInfo di = Directory.CreateDirectory(_folder);
             }
-
-            //IFormFile name對應input type=file的name屬性)
             if (ModelState.IsValid)
             {
-                
+
                 if (myimg != null)
                 {
                     //另存圖片
-                    altPath = $@"{_folder}\{myimg.FileName}";
-                    using (var stream = new FileStream(altPath, FileMode.Create))
-                    {
-                        await myimg.CopyToAsync(stream);
-                    }
-                    product.Image = altPath;
+                    string altPath = $@"{_folder}\{myimg.FileName}";
+
+                    await _productService.CreateProduct(product, myimg, altPath);
+                    return RedirectToAction(nameof(Index));
                 }
 
-                //設定資料
-                //name
 
-                //CategoryId
-
-                //image path
-
-                //intro
-
-                //releaseDatetime(YYMMDDhhmm)
-                product.ReleaseDatetime = DateTime.Now;
-                //SupplyStatus
-
-                //對資料庫新增資料
-                _context.Add(product);
-                //儲存資料
-                await _context.SaveChangesAsync();
-                //重新路由
-                return RedirectToAction(nameof(Index));
             }
             ViewData["Categories"] = new SelectList(_context.Set<CategoryTable>(), "Id", "Name", product.CategoryId);
             return View(product);
@@ -111,6 +96,21 @@ namespace TsetCMS.Web.Controllers
             return View();
         }
 
+
+        /// <summary>
+        /// 新增產品類別
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult CreateCategory()
+        {
+            return View();
+        }
+        /// <summary>
+        /// 新增產品類別
+        /// </summary>
+        /// <param name="category"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateCategory(CategoryTable category)
