@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\TestCMS.DataAccess\TestCMS.DataAccess.csproj" />
     <ProjectReference Include="..\TestCMS.Entity\TestCMS.Entity.csproj" />
   </ItemGroup>
