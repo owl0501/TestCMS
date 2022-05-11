@@ -8,9 +8,10 @@
 <div class="main">
     <div class="row gx-0">
         <div class="slide col-lg-2 col-sm-3">
+
             @foreach (var item in Model.Categories)
             {
-                <a class="btn btn-lg slide-btn">@item.Name</a>
+                <a class="test btn btn-lg slide-btn" id=@item.Id>@item.Name</a>
             }
 
         </div>
@@ -26,3 +27,15 @@
         </div>
     </div>
 </div>
+
+@section Scripts{
+    <script>
+        $(function(){
+            $(".test").click(function(ev){
+                ev.preventDefault();
+                let a=ev.target;
+                location.href = "/Product/Index?category="+a.textContent;
+            })
+        });
+    </script>
+}
