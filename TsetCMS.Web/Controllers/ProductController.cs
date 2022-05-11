@@ -20,6 +20,7 @@ namespace TsetCMS.Web.Controllers
     {
         private readonly CMSDBContext _context;
         private readonly IProductService _productService;
+        private readonly ICategoryService _categoryService;
         private readonly ILogger<ProductController> _logger;
         private readonly string _folder;
         public ProductController(CMSDBContext context, ILogger<ProductController> logger, IWebHostEnvironment env, IServiceProvider provider)
@@ -27,21 +28,28 @@ namespace TsetCMS.Web.Controllers
             _context = context;
             _logger = logger;
             _productService = provider.GetRequiredService<IProductService>();
+            _categoryService = provider.GetService<ICategoryService>();
             // 預設上傳目錄下(wwwroot\UploadFolder)
             _folder = $@"{env.WebRootPath}\UploadFolder";
 
         }
 
-        public async Task<IActionResult> Index()
+        [HttpGet]
+        public async Task<IActionResult> Index(string category)
         {
-            var query = from c in _context.CategoryTable
-                        select c;
+            var productQuery = await _productService.Get();
+            var categoryQuery = await _categoryService.Get();
+
+            if (category != null)
+            {
+                productQuery = await _productService.Get(category);
+            }
+
             HomeVM homeVM = new HomeVM
             {
-                Categories = await query.ToListAsync()
+                Products = productQuery.ToList(),
+                Categories = categoryQuery.ToList(),
             };
-
-
             return View(homeVM);
         }
 
@@ -57,7 +65,7 @@ namespace TsetCMS.Web.Controllers
             return View();
         }
         /// <summary>
-        /// 
+        /// 新增產品
         /// </summary>
         /// <param name="product"></param>
         /// <param name="myimg"></param>
