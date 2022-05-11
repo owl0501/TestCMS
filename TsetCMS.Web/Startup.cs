@@ -10,6 +10,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TestCMS.Entity.Entity;
+using TestCMS.Business.Abstract;
+using TestCMS.Business.Concrete;
+using TestCMS.DataAccess.Concrete;
+using TestCMS.DataAccess.Abstract;
+
 
 namespace TsetCMS.Web
 {
@@ -21,10 +26,14 @@ namespace TsetCMS.Web
         }
 
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment Environment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped< IProductService, ProductService>();
+            services.AddScoped<IProductRepo, ProductRepo>();
+
             services.AddControllersWithViews();
             //Register dbcontext
             services.AddDbContext<CMSDBContext>(options =>
