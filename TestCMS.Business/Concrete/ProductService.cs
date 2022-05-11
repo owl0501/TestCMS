@@ -4,10 +4,12 @@ using System.Text;
 using System.Threading.Tasks;
 using TestCMS.Business.Abstract;
 using TestCMS.Entity.Entity;
+using TestCMS.Entity.VM;
 using TestCMS.DataAccess.Abstract;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using System.IO;
+using System.Linq;
 
 namespace TestCMS.Business.Concrete
 {
@@ -17,9 +19,11 @@ namespace TestCMS.Business.Concrete
         /// 建構子DI
         /// </summary>
         private readonly IProductRepo _repo;
+        private readonly ICategoryService _categoryService;
         public ProductService(IServiceProvider provider)
         {
             _repo = provider.GetRequiredService<IProductRepo>();
+            _categoryService = provider.GetRequiredService<ICategoryService>();
         }
 
         /// <summary>
@@ -53,15 +57,22 @@ namespace TestCMS.Business.Concrete
         {
             return _repo.Delete(id);
         }
-
-        public Task<IEnumerable<ProductTable>> Get()
+        /// <summary>
+        /// 查詢所有顯示資料
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IList<ProductTable>> Get()
         {
-            return _repo.Get();
+            return await _repo.Get();
         }
-
-        public Task<IEnumerable<ProductTable>> Get(int categoryId)
+        /// <summary>
+        /// 以類別查詢
+        /// </summary>
+        /// <param name="categoryId"></param>
+        /// <returns></returns>
+        public Task<IList<ProductTable>> Get(string category)
         {
-            return _repo.Get(categoryId);
+            return _repo.Get(category);
         }
 
         public Task Update(ProductTable product)

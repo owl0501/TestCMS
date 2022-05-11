@@ -44,7 +44,7 @@ namespace TestCMS.DataAccess.Concrete
         /// 查詢所有資料
         /// </summary>
         /// <returns></returns>
-        public async Task<IEnumerable<ProductTable>> Get()
+        public async Task<IList<ProductTable>> Get()
         {
             return await _context.ProductTable.ToListAsync();
         }
@@ -53,10 +53,10 @@ namespace TestCMS.DataAccess.Concrete
         /// </summary>
         /// <param name="categoryId"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<ProductTable>> Get(int categoryId)
+        public async Task<IList<ProductTable>> Get(string category)
         {
             var result = from data in _context.ProductTable.Include(p => p.Category) select data;
-            result = result.Where(data => data.CategoryId == categoryId);
+            result = result.Where(data => data.Category.Name == category);
             return await result.ToListAsync();
         }
         /// <summary>

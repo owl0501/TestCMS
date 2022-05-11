@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using TestCMS.Entity.Entity;
+using TestCMS.Entity.VM;
 
 namespace TestCMS.Business.Abstract
 {
@@ -13,14 +14,14 @@ namespace TestCMS.Business.Abstract
         /// 查詢所有資料
         /// </summary>
         /// <returns></returns>
-        Task<IEnumerable<ProductTable>> Get();
+        Task<IList<ProductTable>> Get();
 
         /// <summary>
         /// 以類別查詢
         /// </summary>
         /// <param name="categoryId"></param>
         /// <returns></returns>
-        Task<IEnumerable<ProductTable>> Get(int categoryId);
+        Task<IList<ProductTable>> Get(string categoryId);
 
         /// <summary>
         /// 新增資料

@@ -12,14 +12,14 @@ namespace TestCMS.DataAccess.Abstract
         /// 查詢所有資料
         /// </summary>
         /// <returns></returns>
-        Task<IEnumerable<ProductTable>> Get();
+        Task<IList<ProductTable>> Get();
 
         /// <summary>
         /// 以類別查詢
         /// </summary>
         /// <param name="categoryId"></param>
         /// <returns></returns>
-        Task<IEnumerable<ProductTable>> Get(int categoryId);
+        Task<IList<ProductTable>> Get(string categoryId);
 
         /// <summary>
         /// 新增資料
