@@ -162,3 +162,8 @@ sh.exe.stackdump
 /.vs/JIAHSIN/config/applicationhost.config
 /.vs/JIAHSIN/DesignTimeBuild/.dtbcache.v2
 .vs/
+*.png
+*.jpg
+*.PNG
+*.gif
+*.svg
