@@ -26,7 +26,7 @@ namespace TestCMS.Entity.Entity
         public string Image { get; set; }
         [Display(Name = "產品說明")]
         public string Intro { get; set; }
-        public DateTime? ReleaseDatetime { get; set; }
+        public DateTime ReleaseDatetime { get; set; }
         public string SupplyStatus { get; set; }
 
         public virtual CategoryTable Category { get; set; }

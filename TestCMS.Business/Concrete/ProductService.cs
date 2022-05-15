@@ -63,6 +63,7 @@ namespace TestCMS.Business.Concrete
         /// <returns></returns>
         public async Task<IList<ProductTable>> Get()
         {
+            //var products = await _repo.Get();
             return await _repo.Get();
         }
         /// <summary>
