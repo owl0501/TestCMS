@@ -44,10 +44,9 @@ namespace TestCMS.Business.Concrete
         /// 查詢所有類別
         /// </summary>
         /// <returns></returns>
-
         public Task<IList<CategoryTable>> Get()
         {
-            return _repo.GetAsync();
+            return _repo.Get();
         }
     }
 }

@@ -12,7 +12,7 @@ namespace TestCMS.DataAccess.Abstract
         /// 查詢所有資料
         /// </summary>
         /// <returns></returns>
-        Task<IList<CategoryTable>> GetAsync();
+        Task<IList<CategoryTable>> Get();
 
         /// <summary>
         /// 新增資料

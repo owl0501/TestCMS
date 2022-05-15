@@ -8,13 +8,13 @@ namespace TestCMS.Business.Abstract
     public interface ICategoryService
     {
         /// <summary>
-        /// 查詢所有資料
+        /// 查詢所有類別
         /// </summary>
         /// <returns></returns>
         Task<IList<CategoryTable>> Get();
 
         /// <summary>
-        /// 新增資料
+        /// 新增類別
         /// </summary>
         /// <param name="category"></param>
         /// <returns></returns>

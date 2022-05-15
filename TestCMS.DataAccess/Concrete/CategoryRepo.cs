@@ -44,7 +44,7 @@ namespace TestCMS.DataAccess.Concrete
         /// 查詢所有資料
         /// </summary>
         /// <returns></returns>
-        public async Task<IList<CategoryTable>> GetAsync()
+        public async Task<IList<CategoryTable>> Get()
         {
             return await _context.CategoryTable.ToListAsync();
         }
