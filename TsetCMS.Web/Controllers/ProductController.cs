@@ -18,9 +18,13 @@ namespace TsetCMS.Web.Controllers
 {
     public class ProductController : Controller
     {
+        /// <summary>
+        /// 建構子DI
+        /// </summary>
         private readonly CMSDBContext _context;
         private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
+        private readonly ICartService _cartService;
         private readonly ILogger<ProductController> _logger;
         private readonly string _folder;
         public ProductController(CMSDBContext context, ILogger<ProductController> logger, IWebHostEnvironment env, IServiceProvider provider)
@@ -29,36 +33,46 @@ namespace TsetCMS.Web.Controllers
             _logger = logger;
             _productService = provider.GetRequiredService<IProductService>();
             _categoryService = provider.GetService<ICategoryService>();
+            _cartService = provider.GetService<ICartService>();
             // 預設上傳目錄下(wwwroot\UploadFolder)
             _folder = $@"{env.WebRootPath}\UploadFolder";
 
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string category)
+        public async Task<IActionResult> Index(string searchStr)
         {
             var productQuery = await _productService.Get();
             var categoryQuery = await _categoryService.Get();
 
-            if (category != null)
+            IList<ProductDataVM> pvm = new List<ProductDataVM>();
+            foreach(var item in productQuery)
             {
-                productQuery = await _productService.Get(category);
+                pvm.Add(new ProductDataVM
+                {
+                    ImagePath = item.Image,
+                    Name = item.Name,
+                    Category = item.Category.Name,
+                    Intro = item.Intro,
+                    SupplyState = item.SupplyStatus,
+                    IsNew = DateTime.Now.Subtract(item.ReleaseDatetime).Days <= 14
+                });
+            }
+            if (searchStr != null)
+            {
+                productQuery = await _productService.Get(searchStr);
             }
 
-            HomeVM homeVM = new HomeVM
+            IndexVM indexVM = new IndexVM
             {
-                Products = productQuery.ToList(),
+                Products = pvm,
                 Categories = categoryQuery.ToList(),
             };
-            return View(homeVM);
+            return View(indexVM);
         }
 
-
-
-
-
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult ProductAdd()
         {
             //傳Categories model給create view
             ViewData["Categories"] = new SelectList(_context.Set<CategoryTable>(), "Id", "Name");
@@ -72,7 +86,7 @@ namespace TsetCMS.Web.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ProductTable product, IFormFile myimg)
+        public async Task<IActionResult> ProductAdd(ProductTable product, IFormFile myimg)
         {
             //IFormFile name對應input type=file的name屬性)
 
@@ -94,23 +108,16 @@ namespace TsetCMS.Web.Controllers
 
 
             }
+            var t = _context.Set<CategoryTable>();
             ViewData["Categories"] = new SelectList(_context.Set<CategoryTable>(), "Id", "Name", product.CategoryId);
             return View(product);
         }
-
-        [HttpGet]
-        public IActionResult Pending()
-        {
-            return View();
-        }
-
-
         /// <summary>
         /// 新增產品類別
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult CreateCategory()
+        public IActionResult CategoryAdd()
         {
             return View();
         }
@@ -121,7 +128,7 @@ namespace TsetCMS.Web.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateCategory(CategoryTable category)
+        public async Task<IActionResult> CategoryAdd(CategoryTable category)
         {
             string msg = "失敗";
             if (ModelState.IsValid)
@@ -154,5 +161,23 @@ namespace TsetCMS.Web.Controllers
             ViewBag.isOK = msg;
             return View();
         }
+
+        #region Cart
+        public IActionResult CartAdd(CartTable cartvm)
+        {
+            var p = _context.ProductTable.Find(9);
+            CartTable c = new CartTable
+            {
+                ProductId = 1,
+                Amount = 1,
+            };
+            var cc = _cartService.CartAdd(c);
+            var cartQuery = _cartService.Get();
+            return Redirect(nameof(Index));
+        }
+        #endregion
+
+
+
     }
 }
