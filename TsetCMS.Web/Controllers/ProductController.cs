@@ -26,7 +26,6 @@ namespace TsetCMS.Web.Controllers
         private readonly ICategoryService _categoryService;
         //private readonly ICartService _cartService;
         private readonly ILogger<ProductController> _logger;
-        private readonly string _root;
         private readonly string _fodler;
         public ProductController(CMSDBContext context, ILogger<ProductController> logger, IWebHostEnvironment env, IServiceProvider provider)
         {
@@ -37,9 +36,6 @@ namespace TsetCMS.Web.Controllers
             //_cartService = provider.GetService<ICartService>();
             // 預設上傳目錄下(wwwroot\UploadFolder)
             _fodler = $@"{env.WebRootPath}";
-            _root = $@"{env.ContentRootPath}";
-
-
         }
 
         [HttpGet]
@@ -56,6 +52,7 @@ namespace TsetCMS.Web.Controllers
             {
                 pvm.Add(new ProductDataVM
                 {
+                    Id = item.Id,
                     ImagePath = item.Image.Remove(0, _fodler.Length),
                     Name = item.Name,
                     Category = item.Category.Name,
@@ -93,9 +90,9 @@ namespace TsetCMS.Web.Controllers
         {
             //IFormFile name對應input type=file的name屬性)
 
-            if (!Directory.Exists(_root))
+            if (!Directory.Exists(_fodler))
             {
-                DirectoryInfo di = Directory.CreateDirectory(_root);
+                DirectoryInfo di = Directory.CreateDirectory(_fodler);
             }
             if (ModelState.IsValid)
             {
@@ -103,7 +100,7 @@ namespace TsetCMS.Web.Controllers
                 if (myimg != null)
                 {
                     //另存圖片
-                    string altPath = $@"{_root}\UploadFolder\{myimg.FileName}";
+                    string altPath = $@"{_fodler}\UploadFolder\{myimg.FileName}";
 
                     await _productService.CreateProduct(product, myimg, altPath);
                     return RedirectToAction(nameof(Index));
@@ -117,9 +114,62 @@ namespace TsetCMS.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult ProductEdit(ProductTable p)
+        public async Task<IActionResult> ProductEdit(int? id, bool isProvide)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var p = await _context.ProductTable.FindAsync(id);
+            isProvide = (p.SupplyStatus.Trim() == "Y") ?true:false;
+            if (p == null)
+            {
+                return NotFound();
+            }
+
+            p.Image = p.Image.Remove(0, _fodler.Length);
+            //傳Categories model給create view
+            ViewData["Categories"] = new SelectList(_context.Set<CategoryTable>(), "Id", "Name");
+            return View(p);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ProductEdit(int id, [Bind("Id","Image","CategoryId","SupplyStatus")] ProductTable product,bool isProvide)
+        {
+            if (id != product.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    product.SupplyStatus = (isProvide) ?"Y":"N";
+                    _context.Update(product);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    if (!ProductExists(product.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw(ex);
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(product);
+        }
+
+        private bool ProductExists(int id)
+        {
+            return _context.ProductTable.Any(e => e.Id == id);
         }
         /// <summary>
         /// 新增產品類別
