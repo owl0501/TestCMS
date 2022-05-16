@@ -114,7 +114,7 @@ namespace TsetCMS.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ProductEdit(int? id, bool isProvide)
+        public async Task<IActionResult> ProductEdit(int? id)
         {
             if (id == null)
             {
@@ -122,7 +122,6 @@ namespace TsetCMS.Web.Controllers
             }
 
             var p = await _context.ProductTable.FindAsync(id);
-            isProvide = (p.SupplyStatus.Trim() == "Y") ?true:false;
             if (p == null)
             {
                 return NotFound();
@@ -136,7 +135,7 @@ namespace TsetCMS.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ProductEdit(int id, [Bind("Id","Image","CategoryId","SupplyStatus")] ProductTable product,bool isProvide)
+        public async Task<IActionResult> ProductEdit(int id, ProductTable product,bool isProvide)
         {
             if (id != product.Id)
             {
@@ -148,6 +147,7 @@ namespace TsetCMS.Web.Controllers
                 try
                 {
                     product.SupplyStatus = (isProvide) ?"Y":"N";
+                    product.Image = $"{_fodler}" + product.Image;
                     _context.Update(product);
                     await _context.SaveChangesAsync();
                 }
