@@ -24,18 +24,21 @@ namespace TsetCMS.Web.Controllers
         private readonly CMSDBContext _context;
         private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
-        private readonly ICartService _cartService;
+        //private readonly ICartService _cartService;
         private readonly ILogger<ProductController> _logger;
-        private readonly string _folder;
+        private readonly string _root;
+        private readonly string _fodler;
         public ProductController(CMSDBContext context, ILogger<ProductController> logger, IWebHostEnvironment env, IServiceProvider provider)
         {
             _context = context;
             _logger = logger;
             _productService = provider.GetRequiredService<IProductService>();
             _categoryService = provider.GetService<ICategoryService>();
-            _cartService = provider.GetService<ICartService>();
+            //_cartService = provider.GetService<ICartService>();
             // 預設上傳目錄下(wwwroot\UploadFolder)
-            _folder = $@"{env.WebRootPath}\UploadFolder";
+            _fodler = $@"{env.WebRootPath}";
+            _root = $@"{env.ContentRootPath}";
+
 
         }
 
@@ -44,13 +47,16 @@ namespace TsetCMS.Web.Controllers
         {
             var productQuery = await _productService.Get();
             var categoryQuery = await _categoryService.Get();
-
+            if (searchStr != null)
+            {
+                productQuery = await _productService.Get(searchStr);
+            }
             IList<ProductDataVM> pvm = new List<ProductDataVM>();
             foreach(var item in productQuery)
             {
                 pvm.Add(new ProductDataVM
                 {
-                    ImagePath = item.Image,
+                    ImagePath = item.Image.Remove(0, _fodler.Length),
                     Name = item.Name,
                     Category = item.Category.Name,
                     Intro = item.Intro,
@@ -58,10 +64,7 @@ namespace TsetCMS.Web.Controllers
                     IsNew = DateTime.Now.Subtract(item.ReleaseDatetime).Days <= 14
                 });
             }
-            if (searchStr != null)
-            {
-                productQuery = await _productService.Get(searchStr);
-            }
+            
 
             IndexVM indexVM = new IndexVM
             {
@@ -90,9 +93,9 @@ namespace TsetCMS.Web.Controllers
         {
             //IFormFile name對應input type=file的name屬性)
 
-            if (!Directory.Exists(_folder))
+            if (!Directory.Exists(_root))
             {
-                DirectoryInfo di = Directory.CreateDirectory(_folder);
+                DirectoryInfo di = Directory.CreateDirectory(_root);
             }
             if (ModelState.IsValid)
             {
@@ -100,7 +103,7 @@ namespace TsetCMS.Web.Controllers
                 if (myimg != null)
                 {
                     //另存圖片
-                    string altPath = $@"{_folder}\{myimg.FileName}";
+                    string altPath = $@"{_root}\UploadFolder\{myimg.FileName}";
 
                     await _productService.CreateProduct(product, myimg, altPath);
                     return RedirectToAction(nameof(Index));
@@ -111,6 +114,12 @@ namespace TsetCMS.Web.Controllers
             var t = _context.Set<CategoryTable>();
             ViewData["Categories"] = new SelectList(_context.Set<CategoryTable>(), "Id", "Name", product.CategoryId);
             return View(product);
+        }
+
+        [HttpGet]
+        public IActionResult ProductEdit(ProductTable p)
+        {
+            return View();
         }
         /// <summary>
         /// 新增產品類別
@@ -161,20 +170,23 @@ namespace TsetCMS.Web.Controllers
             ViewBag.isOK = msg;
             return View();
         }
+        
+
+
 
         #region Cart
-        public IActionResult CartAdd(CartTable cartvm)
-        {
-            var p = _context.ProductTable.Find(9);
-            CartTable c = new CartTable
-            {
-                ProductId = 1,
-                Amount = 1,
-            };
-            var cc = _cartService.CartAdd(c);
-            var cartQuery = _cartService.Get();
-            return Redirect(nameof(Index));
-        }
+        //public IActionResult CartAdd(CartTable cartvm)
+        //{
+        //    var p = _context.ProductTable.Find(9);
+        //    CartTable c = new CartTable
+        //    {
+        //        ProductId = 1,
+        //        Amount = 1,
+        //    };
+        //    var cc = _cartService.CartAdd(c);
+        //    var cartQuery = _cartService.Get();
+        //    return Redirect(nameof(Index));
+        //}
         #endregion
 
 
