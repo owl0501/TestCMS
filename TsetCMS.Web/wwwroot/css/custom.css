@@ -178,18 +178,18 @@ input[type="file"]::file-selector-button {
     position: relative;
 }
 
-    .img-container > img {
-        max-height: 100%;
-        max-width: 100%;
-        width: auto;
-        height: auto;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        margin: auto;
-    }
+.preview-img {
+    max-height: 100%;
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
 
 .c-badge {
     background-color: var(--base-blue);
@@ -220,6 +220,9 @@ input[type="file"]::file-selector-button {
     position: absolute;
     right: 1rem;
     bottom: .5rem;
+}
+
+.preview-img {
 }
 
 @media screen and (max-width:768px) {

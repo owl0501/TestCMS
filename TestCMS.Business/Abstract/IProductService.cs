@@ -28,7 +28,7 @@ namespace TestCMS.Business.Abstract
         /// </summary>
         /// <param name="product"></param>
         /// <returns></returns>
-        Task<ProductTable> CreateProduct(ProductTable product, IFormFile file, string altpath);
+        Task<ProductTable> CreateProduct(ProductTable product, IFormFile file, string rootPath);
 
         /// <summary>
         /// 修改資料

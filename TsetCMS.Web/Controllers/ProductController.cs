@@ -52,8 +52,9 @@ namespace TsetCMS.Web.Controllers
             {
                 pvm.Add(new ProductDataVM
                 {
+                    //.Remove(0, _fodler.Length)
                     Id = item.Id,
-                    ImagePath = item.Image.Remove(0, _fodler.Length),
+                    ImagePath = item.Image,
                     Name = item.Name,
                     Category = item.Category.Name,
                     Intro = item.Intro,
@@ -89,24 +90,13 @@ namespace TsetCMS.Web.Controllers
         public async Task<IActionResult> ProductAdd(ProductTable product, IFormFile myimg)
         {
             //IFormFile name對應input type=file的name屬性)
-
-            if (!Directory.Exists(_fodler))
-            {
-                DirectoryInfo di = Directory.CreateDirectory(_fodler);
-            }
             if (ModelState.IsValid)
             {
-
                 if (myimg != null)
                 {
-                    //另存圖片
-                    string altPath = $@"{_fodler}\UploadFolder\{myimg.FileName}";
-
-                    await _productService.CreateProduct(product, myimg, altPath);
+                    await _productService.CreateProduct(product, myimg, _fodler);
                     return RedirectToAction(nameof(Index));
                 }
-
-
             }
             var t = _context.Set<CategoryTable>();
             ViewData["Categories"] = new SelectList(_context.Set<CategoryTable>(), "Id", "Name", product.CategoryId);
@@ -126,8 +116,6 @@ namespace TsetCMS.Web.Controllers
             {
                 return NotFound();
             }
-
-            p.Image = p.Image.Remove(0, _fodler.Length);
             //傳Categories model給create view
             ViewData["Categories"] = new SelectList(_context.Set<CategoryTable>(), "Id", "Name");
             return View(p);
@@ -146,8 +134,6 @@ namespace TsetCMS.Web.Controllers
             {
                 try
                 {
-                    product.SupplyStatus = (isProvide) ?"Y":"N";
-                    product.Image = $"{_fodler}" + product.Image;
                     _context.Update(product);
                     await _context.SaveChangesAsync();
                 }
