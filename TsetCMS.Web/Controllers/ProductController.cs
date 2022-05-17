@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Hosting;
 using TestCMS.Entity.VM;
 using TestCMS.Entity.Entity;
 using TestCMS.Business.Abstract;
+using TestCMS.Helper;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace TsetCMS.Web.Controllers
@@ -39,7 +40,7 @@ namespace TsetCMS.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string searchStr)
+        public async Task<IActionResult> Index(string searchStr, int? pageNumber)
         {
             var productQuery = await _productService.Get();
             var categoryQuery = await _categoryService.Get();
@@ -52,24 +53,17 @@ namespace TsetCMS.Web.Controllers
             {
                 pvm.Add(new ProductDataVM
                 {
-                    //.Remove(0, _fodler.Length)
-                    Id = item.Id,
-                    ImagePath = item.Image,
-                    Name = item.Name,
-                    Category = item.Category.Name,
-                    Intro = item.Intro,
-                    SupplyState = item.SupplyStatus,
+                    Product=item,
                     IsNew = DateTime.Now.Subtract(item.ReleaseDatetime).Days <= 14
                 });
             }
-            
 
-            IndexVM indexVM = new IndexVM
-            {
-                Products = pvm,
-                Categories = categoryQuery.ToList(),
-            };
-            return View(indexVM);
+            var pq = pvm.AsQueryable();
+            int pageSize = 4;
+            var tmp = PaginatedList<ProductDataVM>.CreateAsync(pq.AsNoTracking(), pageNumber ?? 1, pageSize);
+
+            ViewData["Categories"] = categoryQuery.ToList();
+            return View(tmp);
         }
 
         [HttpGet]
@@ -134,6 +128,9 @@ namespace TsetCMS.Web.Controllers
             {
                 try
                 {
+                    if (!product.Image.Contains("UploadFolder")){
+                        product.Image = ImageHelper.SaveImagePath(product.Image);
+                    }
                     _context.Update(product);
                     await _context.SaveChangesAsync();
                 }
