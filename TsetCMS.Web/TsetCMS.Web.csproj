@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TestCMS.Business\TestCMS.Business.csproj" />
+    <ProjectReference Include="..\TestCMS.Helper\TestCMS.Helper.csproj" />
   </ItemGroup>
 
   <ItemGroup>
