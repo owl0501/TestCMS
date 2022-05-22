@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Hosting;
 using TestCMS.Entity.VM;
 using TestCMS.Entity.Entity;
 using TestCMS.Business.Abstract;
+using TestCMS.Helper;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace TsetCMS.Web.Controllers
@@ -24,51 +25,45 @@ namespace TsetCMS.Web.Controllers
         private readonly CMSDBContext _context;
         private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
-        private readonly ICartService _cartService;
+        //private readonly ICartService _cartService;
         private readonly ILogger<ProductController> _logger;
-        private readonly string _folder;
+        private readonly string _fodler;
         public ProductController(CMSDBContext context, ILogger<ProductController> logger, IWebHostEnvironment env, IServiceProvider provider)
         {
             _context = context;
             _logger = logger;
             _productService = provider.GetRequiredService<IProductService>();
             _categoryService = provider.GetService<ICategoryService>();
-            _cartService = provider.GetService<ICartService>();
+            //_cartService = provider.GetService<ICartService>();
             // 預設上傳目錄下(wwwroot\UploadFolder)
-            _folder = $@"{env.WebRootPath}\UploadFolder";
-
+            _fodler = $@"{env.WebRootPath}";
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string searchStr)
+        public async Task<IActionResult> Index(string searchStr, int? pageNumber)
         {
             var productQuery = await _productService.Get();
             var categoryQuery = await _categoryService.Get();
-
+            if (searchStr != null)
+            {
+                productQuery = await _productService.Get(searchStr);
+            }
             IList<ProductDataVM> pvm = new List<ProductDataVM>();
             foreach(var item in productQuery)
             {
                 pvm.Add(new ProductDataVM
                 {
-                    ImagePath = item.Image,
-                    Name = item.Name,
-                    Category = item.Category.Name,
-                    Intro = item.Intro,
-                    SupplyState = item.SupplyStatus,
+                    Product=item,
                     IsNew = DateTime.Now.Subtract(item.ReleaseDatetime).Days <= 14
                 });
             }
-            if (searchStr != null)
-            {
-                productQuery = await _productService.Get(searchStr);
-            }
 
-            IndexVM indexVM = new IndexVM
-            {
-                Products = pvm,
-                Categories = categoryQuery.ToList(),
-            };
-            return View(indexVM);
+            var pq = pvm.AsQueryable();
+            int pageSize = 4;
+            var tmp = PaginatedList<ProductDataVM>.CreateAsync(pq.AsNoTracking(), pageNumber ?? 1, pageSize);
+
+            ViewData["Categories"] = categoryQuery.ToList();
+            return View(tmp);
         }
 
         [HttpGet]
@@ -89,28 +84,75 @@ namespace TsetCMS.Web.Controllers
         public async Task<IActionResult> ProductAdd(ProductTable product, IFormFile myimg)
         {
             //IFormFile name對應input type=file的name屬性)
-
-            if (!Directory.Exists(_folder))
-            {
-                DirectoryInfo di = Directory.CreateDirectory(_folder);
-            }
             if (ModelState.IsValid)
             {
-
                 if (myimg != null)
                 {
-                    //另存圖片
-                    string altPath = $@"{_folder}\{myimg.FileName}";
-
-                    await _productService.CreateProduct(product, myimg, altPath);
+                    await _productService.CreateProduct(product, myimg, _fodler);
                     return RedirectToAction(nameof(Index));
                 }
-
-
             }
             var t = _context.Set<CategoryTable>();
             ViewData["Categories"] = new SelectList(_context.Set<CategoryTable>(), "Id", "Name", product.CategoryId);
             return View(product);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ProductEdit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var p = await _context.ProductTable.FindAsync(id);
+            if (p == null)
+            {
+                return NotFound();
+            }
+            //傳Categories model給create view
+            ViewData["Categories"] = new SelectList(_context.Set<CategoryTable>(), "Id", "Name");
+            return View(p);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ProductEdit(int id, ProductTable product,bool isProvide)
+        {
+            if (id != product.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    if (!product.Image.Contains("UploadFolder")){
+                        product.Image = ImageHelper.SaveImagePath(product.Image);
+                    }
+                    _context.Update(product);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    if (!ProductExists(product.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw(ex);
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(product);
+        }
+
+        private bool ProductExists(int id)
+        {
+            return _context.ProductTable.Any(e => e.Id == id);
         }
         /// <summary>
         /// 新增產品類別
@@ -161,20 +203,23 @@ namespace TsetCMS.Web.Controllers
             ViewBag.isOK = msg;
             return View();
         }
+        
+
+
 
         #region Cart
-        public IActionResult CartAdd(CartTable cartvm)
-        {
-            var p = _context.ProductTable.Find(9);
-            CartTable c = new CartTable
-            {
-                ProductId = 1,
-                Amount = 1,
-            };
-            var cc = _cartService.CartAdd(c);
-            var cartQuery = _cartService.Get();
-            return Redirect(nameof(Index));
-        }
+        //public IActionResult CartAdd(CartTable cartvm)
+        //{
+        //    var p = _context.ProductTable.Find(9);
+        //    CartTable c = new CartTable
+        //    {
+        //        ProductId = 1,
+        //        Amount = 1,
+        //    };
+        //    var cc = _cartService.CartAdd(c);
+        //    var cartQuery = _cartService.Get();
+        //    return Redirect(nameof(Index));
+        //}
         #endregion
 
 

@@ -1,4 +1,5 @@
-﻿@import '../css/base.css';
+﻿@import 'base.css';
+
 * {
     margin: 0;
     padding: 0;
@@ -12,6 +13,12 @@ a {
     a:hover {
         color: var(--base-blue);
     }
+
+.redstar:before {
+    content: "*";
+    color: red;
+}
+
 /*Logo*/
 .logo {
     width: 300px;
@@ -33,7 +40,7 @@ a {
         width: 170px;
         object-fit: cover;
     }
-/*banner*/
+/* 橫幅 */
 .banner {
     display: flex;
     flex-direction: column;
@@ -57,32 +64,41 @@ a {
         border-top: 2px solid black;
         margin-top: -1.5rem;
     }
-/*top-func*/
-.text-btn {
-    position: absolute;
-    top: 2.5rem;
-    right: var(--horizontal-margin);
-    z-index: 1;
-    font-size: 1.2rem;
-    font-weight: bolder;
-    color: var(--base-blue);
+/* 主容器 */
+.main {
+    padding: 0 var(--h-margin);
+    background-color: #aaa;
 }
+
+/*數量提示小圓圖*/
 .tip {
     background-color: var(--sp-blue);
     transform: translate(0%,-50%);
 }
 
-.main {
-    padding: 0 var(--horizontal-margin);
-    background-color: #aaa;
+.t {
+    background-color: var(--sp-blue);
+    font-size: 1rem;
+    font-weight: bolder;
 }
 
-.slide {
+
+/*檔案上傳*/
+input[type="file"]::file-selector-button {
+    display: none;
+}
+
+/*邊欄*/
+.sidebar {
     background-color: burlywood;
-    padding-top: var(--func-hight);
+}
+/*slide與p-body間距*/
+.sidebar-margin {
+    margin-top: calc(var(--func-hight) + 2rem);
+    margin-right: calc(var(--h-margin) + .5rem);
 }
 
-.slide-btn {
+.sidebar-btn {
     display: block;
     margin-bottom: 1rem;
     background-color: transparent;
@@ -93,81 +109,21 @@ a {
     border-radius: 15px;
 }
 
-    .slide-btn:hover, .slide-btn:active {
+    .sidebar-btn:hover, .slide-btn:active {
         background-color: var(--base-blue);
         color: white;
     }
-
-.func-line {
-    display: flex;
-    justify-content: end;
-    height: var(--func-hight);
-    background-color: bisque;
-}
-
-.func-btn {
-    background-color: var(--dark-blue);
-    border: none;
-    color: white;
-    height: 2.5rem;
-    line-height: 1.4rem;
-    margin: calc( (var(--func-hight) - 2.5rem) / 2) 0;
-    margin-left: .3rem;
-    width:9rem;
-}
-
-    .func-btn:hover {
-        opacity: 60%;
-    }
-
-.gallery {
-    height: calc(100vh - 100px );
-    background-color: yellow;
-}
-
-.c-card {
-    background-color: aliceblue;
-    width: 300px;
-    height: 350px;
-    text-align: center;
-    padding: 1rem;
-}
-
-.img-wrap {
-    height: 40%;
-    background-color: indianred;
-    position: relative;
-}
-
-    .img-wrap > img {
-        max-height: 100%;
-        max-width: 100%;
-        width: auto;
-        height: auto;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        margin: auto;
-    }
-
-.c-card .card-body {
-    text-align: left;
-}
-
-
-/*create*/
-.column {
-    display: inline;
-    width: calc(100% - 120px);
-}
-
-h1 {
-    color: var(--base-blue);
+/* 文字按鈕 */
+.text-btn {
+    position: absolute;
+    top: 2.5rem;
+    right: var(--h-margin);
+    z-index: 1;
+    font-size: 1.2rem;
     font-weight: bolder;
+    color: var(--base-blue);
 }
-
+/* 提交按鈕 */
 .submit-btn {
     background-color: var(--base-blue);
     color: white;
@@ -178,12 +134,135 @@ h1 {
     display: block;
 }
 
-.redstar:before {
-    content: "*";
-    color: red;
+/* 功能列 */
+.func-line {
+    display: flex;
+    justify-content: end;
+    height: var(--func-hight);
+    background-color: bisque;
+    margin: 1rem 0;
 }
 
-/*檔案上傳*/
-input[type="file"]::file-selector-button {
-    display: none;
+.func-btn {
+    background-color: var(--dark-blue);
+    border: none;
+    color: white;
+    height: 2.5rem;
+    line-height: 1.4rem;
+    margin: calc( (var(--func-hight) - 2.5rem) / 2) 0;
+    margin-left: .3rem;
+}
+
+    .func-btn:hover {
+        opacity: 60%;
+    }
+
+/* 產品容器 */
+.p-body {
+    background-color: yellow;
+}
+/* 圖片卡 */
+.c-card {
+    position: relative;
+    background-color: aliceblue;
+    height: 400px;
+    text-align: left;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.img-container {
+    height: 45%;
+    background-color: indianred;
+    position: relative;
+}
+
+.preview-img {
+    max-height: 100%;
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+.c-badge {
+    background-color: var(--base-blue);
+    margin-top: 1rem;
+    font-size: .9rem;
+    font-weight: bolder;
+    border-radius: 1.5rem;
+    padding: .4rem 1.2rem;
+    color: aliceblue;
+}
+
+.sub-title {
+    font-size: 1.2rem;
+    font-weight: bolder;
+    line-height: 1.5rem;
+}
+
+.c-text {
+    width: 85%;
+    height: 5rem;
+    overflow-y: scroll;
+    background-color: white;
+}
+/* width */
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #aaa;
+}
+
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+
+.plus-btn {
+    font-size: 1.7rem;
+    color: var(--sp-blue);
+    position: absolute;
+    right: 1rem;
+    bottom: .5rem;
+}
+
+.tag-new {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: red;
+    padding: .5rem;
+    z-index: 1;
+    color: white;
+}
+
+.tag-noship {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: gray;
+    padding: .5rem;
+    z-index: 2;
+    color: white;
+}
+
+@media screen and (max-width:768px) {
+    .sidebar-margin {
+        margin-top: 0;
+        margin-right: 0;
+    }
 }

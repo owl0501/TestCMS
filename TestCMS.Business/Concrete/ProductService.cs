@@ -33,8 +33,14 @@ namespace TestCMS.Business.Concrete
         /// <param name="file"></param>
         /// <param name="altPath"></param>
         /// <returns></returns>
-        public Task<ProductTable> CreateProduct(ProductTable product, IFormFile file, string altPath)
+        public Task<ProductTable> CreateProduct(ProductTable product, IFormFile file, string rootPath)
         {
+            if (!Directory.Exists(rootPath))
+            {
+                DirectoryInfo di = Directory.CreateDirectory(rootPath);
+            }
+            //另存圖片
+            string altPath = $@"{rootPath}\UploadFolder\{file.FileName}";
             using (var stream = new FileStream(altPath, FileMode.Create))
             {
                 file.CopyTo(stream);
@@ -44,7 +50,7 @@ namespace TestCMS.Business.Concrete
             //name
             //CategoryId
             //image path
-            product.Image = altPath;
+            product.Image = $@"\UploadFolder\{file.FileName}";
             //intro
             //releaseDatetime(YYMMDDhhmm)
             product.ReleaseDatetime = DateTime.Now;

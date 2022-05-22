@@ -1,0 +1,103 @@
+﻿@model TestCMS.Entity.Entity.ProductTable
+
+@{
+    ViewData["Title"] = "編輯產品";
+}
+
+<div class="main">
+    <h1 class="mb-5">@Model.Name</h1>
+    <form asp-controller="Product" asp-action="ProductEdit" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger "></div>
+
+        <div class="d-grid gap-4 fs-2">
+            <div class="row">
+                <label asp-for="CategoryId" class=" col-md-3 redstar"></label>
+                <div class="col-md">
+                    <select class="form-control" asp-for="CategoryId" asp-items="ViewBag.Categories"></select>
+                </div>
+                <span asp-validation-for="CategoryId" class="text-danger fs-6"></span>
+            </div>
+            <!-- 圖片 -->
+            <div class="row">
+                <label asp-for="Image" class="control-label col-md-3 redstar"></label>
+                <div class="h-50 col">
+                    <img id="preview" class="img-thumbnail" src=@Model.Image>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col">
+                    <div class="input-group">
+                        <input asp-for="Image" id="srcImage" class="form-control bg-white" readonly/>
+                        <input type="file" class="d-none form-control" id="myimg" asp-for="Image" accept=".jpg,.png,.gif,.svg">
+                        <label class="input-group-text btn submit-btn" for="myimg">選擇圖片</label>
+                    </div>
+                    <span asp-validation-for="Image" class="text-danger fs-6"></span>
+                </div>
+            </div>
+            <div class="row">
+                <label class="control-label col-md-3 redstar">是否上架</label>
+                <div class="col-md">
+                    <div class="form-check form-switch">
+                        @if (Model.SupplyStatus.Trim() == "Y")
+                        {
+                            <input id="ckbox" class="form-check-input" type="checkbox" checked>
+                        }
+                        else
+                        {
+                            <input id="ckbox" class="form-check-input" type="checkbox">
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <label asp-for="Intro" class="control-label col-md-3"></label>
+                <div class="col-md">
+                    <textarea asp-for="Intro" class="form-control" rows="6"></textarea>
+                </div>
+            </div>
+            @*隱藏欄位*@
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="Name" />
+            <input type="hidden" asp-for="SupplyStatus" id="SupplyStatus"/>
+            <input type="hidden" asp-for="ReleaseDatetime" />
+            
+
+
+            <div class="form-group d-flex flex-row-reverse">
+                <input type="submit" value="確定" class="btn btn-lg submit-btn" />
+            </div>
+        </div>
+    </form>
+
+</div>
+
+@section scripts{
+    <script>
+        //附值Modle.Image
+        $('input[type=file]').change(function (ev) {
+            var p = $('input[type=file]').val();
+            $("#srcImage").val(p.split('\\').pop());
+        })
+        
+    </script>
+
+    <script>
+        //前端顯示圖片
+        $('#myimg').on('change', function (ev) {
+            const file = this.files[0];
+            console.log(file);
+            // 使用 createObjectURL 產生圖片url
+            const objectURL = URL.createObjectURL(file);
+            $('#preview').attr('src', objectURL);
+        });
+    </script>
+
+    <script>
+        //Modle.SupplyStatus附值
+        $('#ckbox').on('click', function (ev) {
+            console.log($(this).prop("checked"));
+            $('#SupplyStatus').val(($(this).prop("checked")) ? 'Y' : 'N');
+        });
+    </script>
+}

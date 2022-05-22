@@ -6,11 +6,13 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\TestCMS.DataAccess\TestCMS.DataAccess.csproj" />
     <ProjectReference Include="..\TestCMS.Entity\TestCMS.Entity.csproj" />
+    <ProjectReference Include="..\TestCMS.Helper\TestCMS.Helper.csproj" />
   </ItemGroup>
 
 </Project>
