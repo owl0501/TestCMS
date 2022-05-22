@@ -36,6 +36,8 @@ namespace TsetCMS.Web
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IProductRepo, ProductRepo>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<ICartRepo, CartRepo>();
+            services.AddScoped<ICartService, CartService>();
 
             services.AddControllersWithViews();
             //Register dbcontext
