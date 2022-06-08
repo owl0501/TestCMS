@@ -9,10 +9,10 @@
     <link rel="stylesheet" href="~/css/custom.css" />
 </head>
 <body>
-    <a asp-controller="Product" asp-action="Pending" class="text-btn">
+    <a asp-controller="Product" asp-action="CartIndex" class="text-btn">
         待出貨清單
         <span class="position-absolute top-0 start-100 badge rounded-pill tip">
-            3
+            @ViewData["CartAmount"]
             <span class="visually-hidden">unread messages</span>
         </span>
     </a>
