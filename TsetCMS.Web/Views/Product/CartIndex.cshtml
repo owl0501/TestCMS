@@ -1,0 +1,52 @@
+﻿@model IEnumerable<TestCMS.Entity.Entity.CartTable>;
+
+@{
+    ViewData["Title"] = "待出貨清單";
+}
+<div class="main">
+    <form asp-controller="Product">
+        @foreach (var item in Model)
+        {
+            <div class="cart-item">
+                <input class="form-check-input mx-4" type="checkbox" name="c1">
+                <div class="image-demo">
+                    <img class="img-thumbnail me-5 preview-img " src=@item.Product.Image>
+                </div>
+                
+                <div class="position-relative h-100 me-5">
+                    <span class="category-bdge badge rounded-pill position-absolute top-0">@item.Product.CategoryId</span>
+
+                    <h3 class="cart-title fw-bolder">&nbsp;@item.Product.Name</h3>
+                </div>
+
+                <div class="btn-group me-4" role="group" aria-label="Basic outlined example">
+                    <button type="button" class="btn btn-outline-dark">-</button>
+                    <button type="button" class="btn btn-outline-dark text-part">@item.Amount</button>
+                    <button type="button" class="btn btn-outline-dark">+</button>
+                </div>
+                <a asp-action="Delete" asp-route-id=@item.Id class="btn btn-del" >刪除</a>
+            </div>
+        }
+        <div class="form-group d-flex flex-row-reverse">
+            <input type="submit" value="出貨" class="btn btn-lg submit-btn" />
+        </div>
+    </form>
+</div>
+
+@section Scripts
+{
+    <script>
+        function ConfrimDelete() {
+            if (confirm("你確定要刪除嗎？"))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    </script>
+
+
+}
