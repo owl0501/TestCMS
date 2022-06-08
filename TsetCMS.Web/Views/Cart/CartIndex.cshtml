@@ -4,7 +4,7 @@
     ViewData["Title"] = "待出貨清單";
 }
 <div class="main">
-    <form asp-controller="Product">
+    <form asp-controller="Cart" class="cart-demo">
         @foreach (var item in Model)
         {
             <div class="cart-item">
@@ -12,19 +12,25 @@
                 <div class="image-demo">
                     <img class="img-thumbnail me-5 preview-img " src=@item.Product.Image>
                 </div>
-                
+
                 <div class="position-relative h-100 me-5">
-                    <span class="category-bdge badge rounded-pill position-absolute top-0">@item.Product.CategoryId</span>
+                    <span class="category-bdge badge rounded-pill position-absolute top-0">@item.Product.Category.Name</span>
 
                     <h3 class="cart-title fw-bolder">&nbsp;@item.Product.Name</h3>
                 </div>
 
                 <div class="btn-group me-4" role="group" aria-label="Basic outlined example">
-                    <button type="button" class="btn btn-outline-dark">-</button>
+                    <a asp-action="UpdateAmount" asp-route-pId=@item.Product_id asp-route-mode="decrease"
+                       class="btn btn-outline-dark shadow-none">
+                        <i class="bi bi-dash"></i>
+                    </a>
                     <button type="button" class="btn btn-outline-dark text-part">@item.Amount</button>
-                    <button type="button" class="btn btn-outline-dark">+</button>
+                    <a asp-action="UpdateAmount" asp-route-pId=@item.Product_id asp-route-mode="increase"
+                       class="btn btn-outline-dark shadow-none">
+                        <i class="bi bi-plus"></i>
+                    </a>
                 </div>
-                <a asp-action="Delete" asp-route-id=@item.Id class="btn btn-del" >刪除</a>
+                <a asp-action="RemoveItem" asp-route-id=@item.Id class="btn btn-del" onclick="return confirm('你確定要刪除嗎?')">刪除</a>
             </div>
         }
         <div class="form-group d-flex flex-row-reverse">
@@ -32,21 +38,3 @@
         </div>
     </form>
 </div>
-
-@section Scripts
-{
-    <script>
-        function ConfrimDelete() {
-            if (confirm("你確定要刪除嗎？"))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-    </script>
-
-
-}

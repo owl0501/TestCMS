@@ -1,6 +1,6 @@
 ﻿@using TestCMS.Helper;
 @model PaginatedList<TestCMS.Entity.VM.ProductDataVM>;
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+
 
 
 <div class="banner">
@@ -60,7 +60,7 @@
                                 </div>
                                 @if (item.Product.SupplyStatus.Trim() == "Y")
                                 {
-                                    <a asp-action="CartAdd" asp-route-pId=@item.Product.Id class="plus-btn" id=@item.Product.Id>
+                                    <a asp-controller="Cart" asp-action="CartAdd" asp-route-pId=@item.Product.Id class="plus-btn" id=@item.Product.Id>
                                         <i class="bi bi-plus-circle-fill"></i>
                                     </a>
                                 }
