@@ -6,24 +6,32 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TestCMS.Business.Abstract;
 using TestCMS.Entity.Entity;
+using Microsoft.Extensions.DependencyInjection;
+
 
 namespace TsetCMS.Web.Controllers
 {
     public class CartController : Controller
     {
         private readonly CMSDBContext _context;
+        private readonly ICategoryService _categoryService;
         private readonly ILogger<ProductController> _logger;
         public int CartAmount = 0;
         public CartController(CMSDBContext context, ILogger<ProductController> logger, IWebHostEnvironment env, IServiceProvider provider)
         {
+
             _context = context;
             _logger = logger;
+            _categoryService = provider.GetService<ICategoryService>();
         }
+
         [HttpGet]
-        public IActionResult CartIndex()
+        public async Task<IActionResult> CartIndex()
         {
             var result = from data in _context.CartTable.Include(p => p.Product) select data;
+            var categoryQuery = await _categoryService.Get();
 
             CartAmoutToViewData();
             return View(result);
@@ -31,14 +39,13 @@ namespace TsetCMS.Web.Controllers
 
         public async Task<IActionResult> CartAdd(int pId)
         {
-            //string a = pId;
             var result = _context.CartTable.FirstOrDefault(x => x.Product_id == pId);
             if (result != null)
             {
                 //update
                 result.Amount++;
                 _context.CartTable.Update(result);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             else
             {
@@ -52,19 +59,45 @@ namespace TsetCMS.Web.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index","Product");
         }
 
-        [HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> RemoveItem(int id)
         {
             var item = await _context.CartTable.FindAsync(id);
             _context.CartTable.Remove(item);
             await _context.SaveChangesAsync();
+            return RedirectToAction("CartIndex");
+        }
+
+
+        public async Task<IActionResult> UpdateAmount(int pId,string mode)
+        {
+            var result = _context.CartTable.FirstOrDefault(x => x.Product_id == pId);
+            if (result != null)
+            {
+                if (mode == "increase")
+                {
+                    result.Amount++;
+                }
+                else if (result.Amount > 1)
+                {
+                    result.Amount--;
+                }
+                
+                _context.CartTable.Update(result);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction("CartIndex");
+        }
+        public IActionResult Shipping()
+        {
             return View();
         }
 
+        /// <summary>
+        /// 傳amount to View
+        /// </summary>
         private void CartAmoutToViewData()
         {
             var cartQuery = _context.CartTable.ToList();
@@ -74,5 +107,7 @@ namespace TsetCMS.Web.Controllers
             }
             ViewData["CartAmount"] = CartAmount;
         }
+
+
     }
 }

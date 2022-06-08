@@ -236,58 +236,5 @@ namespace TsetCMS.Web.Controllers
         }
 
 
-
-
-        #region Cart
-        [HttpGet]
-        public IActionResult CartIndex()
-        {
-            var result = from data in _context.CartTable.Include(p => p.Product) select data;
-
-            CartAmoutToViewData();
-            return View(result);
-        }
-
-        public async Task<IActionResult> CartAdd(int pId)
-        {
-            //string a = pId;
-            var result = _context.CartTable.FirstOrDefault(x => x.Product_id == pId);
-            if (result != null)
-            {
-                //update
-                result.Amount++;
-                _context.CartTable.Update(result);
-                _context.SaveChanges();
-            }
-            else
-            {
-                //add
-                CartTable c = new CartTable
-                {
-                    Product_id = pId,
-                    Amount = 1,
-                };
-                _context.CartTable.Add(c);
-                await _context.SaveChangesAsync();
-            }
-
-            return RedirectToAction(nameof(Index));
-        }
-
-        
-        #endregion
-
-        [HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var item = await _context.CartTable.FindAsync(id);
-            _context.CartTable.Remove(item);
-            await _context.SaveChangesAsync();
-            return View();
-        }
-
-
-
     }
 }
