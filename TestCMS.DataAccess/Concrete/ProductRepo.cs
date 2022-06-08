@@ -46,7 +46,8 @@ namespace TestCMS.DataAccess.Concrete
         /// <returns></returns>
         public async Task<IList<ProductTable>> Get()
         {
-            return await _context.ProductTable.ToListAsync();
+            var result = from data in _context.ProductTable.Include(p => p.Category) select data;
+            return await result.ToListAsync();
         }
         /// <summary>
         /// 以類別查詢
