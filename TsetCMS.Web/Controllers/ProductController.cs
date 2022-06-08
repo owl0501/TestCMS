@@ -28,6 +28,7 @@ namespace TsetCMS.Web.Controllers
         //private readonly ICartService _cartService;
         private readonly ILogger<ProductController> _logger;
         private readonly string _fodler;
+        public int CartAmount = 0;
         public ProductController(CMSDBContext context, ILogger<ProductController> logger, IWebHostEnvironment env, IServiceProvider provider)
         {
             _context = context;
@@ -37,31 +38,49 @@ namespace TsetCMS.Web.Controllers
             //_cartService = provider.GetService<ICartService>();
             // 預設上傳目錄下(wwwroot\UploadFolder)
             _fodler = $@"{env.WebRootPath}";
+
+            
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string searchStr, int? pageNumber)
+        public async Task<IActionResult> Index(string searchStr, string currentFilter,int? pageNumber)
         {
             var productQuery = await _productService.Get();
             var categoryQuery = await _categoryService.Get();
+
+            CartAmoutToViewData();
             if (searchStr != null)
             {
-                productQuery = await _productService.Get(searchStr);
+                pageNumber = 1;
             }
+            else
+            {
+                searchStr = currentFilter;
+            }
+            //
+            ViewData["CurrentFilter"] = searchStr;
+            //
+            if (searchStr != null)
+            {
+                productQuery = productQuery.Where(data => data.Category.Name == searchStr).ToList();
+            }
+            //
             IList<ProductDataVM> pvm = new List<ProductDataVM>();
             foreach(var item in productQuery)
             {
                 pvm.Add(new ProductDataVM
                 {
                     Product=item,
-                    IsNew = DateTime.Now.Subtract(item.ReleaseDatetime).Days <= 14
+                    IsNew = DateTime.Now.Subtract(item.ReleaseDatetime).Days <= 14,
                 });
             }
 
             var pq = pvm.AsQueryable();
             int pageSize = 4;
             var tmp = PaginatedList<ProductDataVM>.CreateAsync(pq.AsNoTracking(), pageNumber ?? 1, pageSize);
-
+            
+            
+            
             ViewData["Categories"] = categoryQuery.ToList();
             return View(tmp);
         }
@@ -69,6 +88,7 @@ namespace TsetCMS.Web.Controllers
         [HttpGet]
         public IActionResult ProductAdd()
         {
+            CartAmoutToViewData();
             //傳Categories model給create view
             ViewData["Categories"] = new SelectList(_context.Set<CategoryTable>(), "Id", "Name");
             return View();
@@ -100,6 +120,7 @@ namespace TsetCMS.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> ProductEdit(int? id)
         {
+            CartAmoutToViewData();
             if (id == null)
             {
                 return NotFound();
@@ -150,6 +171,15 @@ namespace TsetCMS.Web.Controllers
             return View(product);
         }
 
+        private void CartAmoutToViewData()
+        {
+            var cartQuery = _context.CartTable.ToList();
+            foreach (var item in cartQuery)
+            {
+                CartAmount += item.Amount;
+            }
+            ViewData["CartAmount"] = CartAmount;
+        }
         private bool ProductExists(int id)
         {
             return _context.ProductTable.Any(e => e.Id == id);
@@ -161,6 +191,7 @@ namespace TsetCMS.Web.Controllers
         [HttpGet]
         public IActionResult CategoryAdd()
         {
+            CartAmoutToViewData();
             return View();
         }
         /// <summary>
@@ -203,24 +234,58 @@ namespace TsetCMS.Web.Controllers
             ViewBag.isOK = msg;
             return View();
         }
-        
+
 
 
 
         #region Cart
-        //public IActionResult CartAdd(CartTable cartvm)
-        //{
-        //    var p = _context.ProductTable.Find(9);
-        //    CartTable c = new CartTable
-        //    {
-        //        ProductId = 1,
-        //        Amount = 1,
-        //    };
-        //    var cc = _cartService.CartAdd(c);
-        //    var cartQuery = _cartService.Get();
-        //    return Redirect(nameof(Index));
-        //}
+        [HttpGet]
+        public IActionResult CartIndex()
+        {
+            var result = from data in _context.CartTable.Include(p => p.Product) select data;
+
+            CartAmoutToViewData();
+            return View(result);
+        }
+
+        public async Task<IActionResult> CartAdd(int pId)
+        {
+            //string a = pId;
+            var result = _context.CartTable.FirstOrDefault(x => x.Product_id == pId);
+            if (result != null)
+            {
+                //update
+                result.Amount++;
+                _context.CartTable.Update(result);
+                _context.SaveChanges();
+            }
+            else
+            {
+                //add
+                CartTable c = new CartTable
+                {
+                    Product_id = pId,
+                    Amount = 1,
+                };
+                _context.CartTable.Add(c);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        
         #endregion
+
+        [HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var item = await _context.CartTable.FindAsync(id);
+            _context.CartTable.Remove(item);
+            await _context.SaveChangesAsync();
+            return View();
+        }
 
 
 
