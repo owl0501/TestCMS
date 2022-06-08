@@ -9,5 +9,7 @@ namespace TestCMS.Entity.VM
     {
         public ProductTable Product; 
         public bool IsNew { get; set; }
+        public int CartAmount { get; set; }
+
     }
 }

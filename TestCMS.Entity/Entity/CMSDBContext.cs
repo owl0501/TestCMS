@@ -39,11 +39,11 @@ namespace TestCMS.Entity.Entity
             {
                 entity.ToTable("CartTable");
 
-                entity.Property(e => e.ProductId).HasColumnName("Product_id");
+                entity.Property(e => e.Product_id).HasColumnName("Product_id");
 
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.CartTables)
-                    .HasForeignKey(d => d.ProductId)
+                    .HasForeignKey(d => d.Product_id)
                     .HasConstraintName("FK__CartTable__Produ__35BCFE0A");
             });
 
