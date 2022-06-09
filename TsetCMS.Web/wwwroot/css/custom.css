@@ -326,6 +326,9 @@ input[type=checkbox]:checked {
     height:10rem;
     width:10rem;
 }
+.cart-demo{
+    min-height:calc( 12rem *2 );
+}
 
 @media screen and (max-width:768px) {
     .sidebar-margin {
