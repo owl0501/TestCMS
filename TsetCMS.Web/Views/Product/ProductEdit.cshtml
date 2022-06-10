@@ -20,8 +20,10 @@
             <!-- 圖片 -->
             <div class="row">
                 <label asp-for="Image" class="control-label col-md-3 redstar"></label>
-                <div class="col image-demo">
-                    <img id="preview" class="img-thumbnail" src=@Model.Image>
+                <div class="col">
+                    <div class="image-demo">
+                        <img id="preview" class="preview-img img-thumbnail" src=@Model.Image>
+                    </div>
                 </div>
             </div>
             <div class="row">
