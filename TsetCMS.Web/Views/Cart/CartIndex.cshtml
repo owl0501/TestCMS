@@ -21,12 +21,12 @@
                     </div>
 
                     <div class="btn-group me-4" role="group" aria-label="Basic outlined example">
-                        <a asp-action="UpdateAmount" asp-route-pId=@item.Product_id asp-route-mode="decrease"
+                        <a asp-action="UpdateAmount" asp-route-pId=@item.ProductId asp-route-mode="decrease"
                            class="btn btn-outline-dark shadow-none">
                             <i class="bi bi-dash"></i>
                         </a>
                         <button type="button" class="btn btn-outline-dark text-part">@item.Amount</button>
-                        <a asp-action="UpdateAmount" asp-route-pId=@item.Product_id asp-route-mode="increase"
+                        <a asp-action="UpdateAmount" asp-route-pId=@item.ProductId asp-route-mode="increase"
                            class="btn btn-outline-dark shadow-none">
                             <i class="bi bi-plus"></i>
                         </a>

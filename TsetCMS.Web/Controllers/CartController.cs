@@ -39,7 +39,7 @@ namespace TsetCMS.Web.Controllers
 
         public async Task<IActionResult> CartAdd(int pId)
         {
-            var result = _context.CartTable.FirstOrDefault(x => x.Product_id == pId);
+            var result = _context.CartTable.FirstOrDefault(x => x.ProductId == pId);
             if (result != null)
             {
                 //update
@@ -52,7 +52,7 @@ namespace TsetCMS.Web.Controllers
                 //add
                 CartTable c = new CartTable
                 {
-                    Product_id = pId,
+                    ProductId = pId,
                     Amount = 1,
                 };
                 _context.CartTable.Add(c);
@@ -73,7 +73,7 @@ namespace TsetCMS.Web.Controllers
 
         public async Task<IActionResult> UpdateAmount(int pId,string mode)
         {
-            var result = _context.CartTable.FirstOrDefault(x => x.Product_id == pId);
+            var result = _context.CartTable.FirstOrDefault(x => x.ProductId == pId);
             if (result != null)
             {
                 if (mode == "increase")
