@@ -27,7 +27,7 @@ namespace TestCMS.Entity.Entity
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=CMSDB;User ID=sa;Password=Pw0922435545;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=CMSDB;User ID=sa;Password=Pw0922435545;Connect Timeout=60;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
             }
         }
 
@@ -39,12 +39,11 @@ namespace TestCMS.Entity.Entity
             {
                 entity.ToTable("CartTable");
 
-                entity.Property(e => e.Product_id).HasColumnName("Product_id");
-
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.CartTables)
-                    .HasForeignKey(d => d.Product_id)
-                    .HasConstraintName("FK__CartTable__Produ__35BCFE0A");
+                    .HasForeignKey(d => d.ProductId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__CartTable__Produ__571DF1D5");
             });
 
             modelBuilder.Entity<CategoryTable>(entity =>
@@ -60,7 +59,9 @@ namespace TestCMS.Entity.Entity
             {
                 entity.ToTable("ProductTable");
 
-                entity.Property(e => e.Image).HasMaxLength(300);
+                entity.Property(e => e.Image)
+                    .IsRequired()
+                    .HasMaxLength(300);
 
                 entity.Property(e => e.Intro).HasMaxLength(1000);
 
@@ -79,18 +80,18 @@ namespace TestCMS.Entity.Entity
                     .WithMany(p => p.ProductTables)
                     .HasForeignKey(d => d.CategoryId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ProductTa__Categ__36B12243");
+                    .HasConstraintName("FK__ProductTa__Categ__534D60F1");
             });
 
             modelBuilder.Entity<ShippingTable>(entity =>
             {
                 entity.ToTable("ShippingTable");
 
-                entity.Property(e => e.ProductId).HasColumnName("Product_id");
+                entity.Property(e => e.CreateDate).HasColumnType("datetime");
 
                 entity.Property(e => e.ShipId)
                     .IsRequired()
-                    .HasMaxLength(15)
+                    .HasMaxLength(2)
                     .HasColumnName("ShipID")
                     .IsFixedLength(true);
 
@@ -98,7 +99,7 @@ namespace TestCMS.Entity.Entity
                     .WithMany(p => p.ShippingTables)
                     .HasForeignKey(d => d.ProductId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ShippingT__Produ__37A5467C");
+                    .HasConstraintName("FK__ShippingT__Produ__5441852A");
             });
 
             OnModelCreatingPartial(modelBuilder);
