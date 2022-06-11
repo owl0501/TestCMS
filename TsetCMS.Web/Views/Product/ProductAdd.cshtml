@@ -5,63 +5,64 @@
 }
 
 <div class="main">
-    <h1 class="mb-5">新增產品</h1>
-    <form asp-controller="Product" asp-action="ProductAdd" enctype="multipart/form-data">
-        <div asp-validation-summary="ModelOnly" class="text-danger "></div>
+    <div class="container">
+        <h1 class="mb-5">新增產品</h1>
+        <form asp-controller="Product" asp-action="ProductAdd" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger "></div>
 
-        <div class="d-grid gap-4 fs-2">
-            <div class="row">
-                <label asp-for="CategoryId" class=" col-md-3 redstar"></label>
-                <div class="col-md">
-                    <select class="form-control" asp-for="CategoryId" asp-items="ViewBag.Categories"></select>
-                </div>
-                <span asp-validation-for="CategoryId" class="text-danger fs-6"></span>
-            </div>
-            <div class="row">
-                <label asp-for="Name" class="control-label col-md-3 redstar"></label>
-                <div class="col-md">
-                    <input asp-for="Name" class="form-control" />
-                    <span asp-validation-for="Name" class="text-danger fs-6"></span>
-                </div>
-
-            </div>
-            <!-- 圖片 -->
-            <div class="row">
-                <label asp-for="Image" class="control-label col-md-3 redstar"></label>
-                <div class="col-md">
-                    <div class="input-group">
-                        <input type="file" class="form-control" id="myimg" name="myimg" accept=".jpg,.png,.gif,.svg">
-                        <input id="image" type="hidden" asp-for="Image"/>
-                        <label class="input-group-text" for="myimg">選擇圖片</label>
+            <div class="d-grid gap-4 fs-2">
+                <div class="row">
+                    <label asp-for="CategoryId" class=" col-md-3 redstar"></label>
+                    <div class="col-md">
+                        <select class="form-control" asp-for="CategoryId" asp-items="ViewBag.Categories"></select>
                     </div>
-                    <span asp-validation-for="Image" class="text-danger fs-6"></span>
+                    <span asp-validation-for="CategoryId" class="text-danger fs-6"></span>
+                </div>
+                <div class="row">
+                    <label asp-for="Name" class="control-label col-md-3 redstar"></label>
+                    <div class="col-md">
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger fs-6"></span>
+                    </div>
+
+                </div>
+                <!-- 圖片 -->
+                <div class="row">
+                    <label asp-for="Image" class="control-label col-md-3 redstar"></label>
+                    <div class="col-md">
+                        <div class="input-group">
+                            <input type="file" class="form-control" id="myimg" name="myimg" accept=".jpg,.png,.gif,.svg">
+                            <input id="image" type="hidden" asp-for="Image" />
+                            <label class="input-group-text" for="myimg">選擇圖片</label>
+                        </div>
+                        <span asp-validation-for="Image" class="text-danger fs-6"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label asp-for="Intro" class="control-label col-md-3"></label>
+                    <div class="col-md">
+                        <textarea asp-for="Intro" class="form-control" rows="6"></textarea>
+                    </div>
+                </div>
+                @*隱藏欄位*@
+                <input type="hidden" asp-for="SupplyStatus" value="Y" />
+
+                <div class="form-group d-flex flex-row-reverse">
+                    <input type="submit" value="確定" class="btn btn-lg submit-btn" />
                 </div>
             </div>
-
-            <div class="row">
-                <label asp-for="Intro" class="control-label col-md-3"></label>
-                <div class="col-md">
-                    <textarea asp-for="Intro" class="form-control" rows="6"></textarea>
-                </div>
-            </div>
-            @*隱藏欄位*@
-            <input type="hidden" asp-for="SupplyStatus" value="Y" />
-
-            <div class="form-group d-flex flex-row-reverse">
-                <input type="submit" value="確定" class="btn btn-lg submit-btn" />
-            </div>
-        </div>
-    </form>
-
+        </form>
+    </div>
 </div>
 
 @section scripts{
-<script>
-    $('input[type=file]').change(function (ev) {
-        var p = $('input[type=file]').val();
-        $("#image").val(p);
-    })
-</script>
-    
+    <script>
+        $('input[type=file]').change(function (ev) {
+            var p = $('input[type=file]').val();
+            $("#image").val(p);
+        })
+    </script>
+
 
 }

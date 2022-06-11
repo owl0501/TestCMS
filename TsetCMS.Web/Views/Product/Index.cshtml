@@ -1,14 +1,101 @@
 ﻿@using TestCMS.Helper;
 @model PaginatedList<TestCMS.Entity.VM.ProductDataVM>;
 
-
-
-<div class="banner">
-    <h2>尋找最佳方案</h2>
-    <span class="dash"></span>
-    <h4>因應不同產業，提供最適應的解決方案</h4>
-</div>
 <div class="main">
+    <div class="banner bg-hint-blue">
+        <h3>尋找最佳方案</h3>
+        <div class="dash"></div>
+        <h5>因應不同產業，提供最適應的解決方案</h5>
+    </div>
+    <div class="container">
+        <div class="row">
+            <col-12>
+                <div class="func-line">
+                    <a asp-action="CategoryAdd" class="btn btn-lg func-btn ">+新增類別</a>
+                    <a asp-action="ProductAdd" class="btn btn-lg func-btn ">+新增產品</a>
+                </div>
+            </col-12>
+        </div>
+        <div class="row">
+            <div class="col-lg-2">
+                <div>
+                    <a class="btn btn-lg sidebar-btn" asp-action="Index">全部產品</a>
+                    @foreach (var item in ViewBag.Categories)
+                    {
+                        <a class="btn btn-lg sidebar-btn" id=@item.Id asp-action="Index" asp-route-searchStr="@item.Name">@item.Name</a>
+                    }
+                </div>
+            </div>
+            <div class="col-12 col-lg-10">
+                <div class="card-container">
+                    @foreach (var item in Model)
+                    {
+                        <div class="card-item">
+                            @if (item.IsNew)
+                            {
+                                <span class="tag-new">
+                                    新上市
+                                </span>
+                            }
+                            @if (item.Product.SupplyStatus.Trim() == "N")
+                            {
+                                <span class="tag-noship">
+                                    已下架
+                                </span>
+                            }
+                            <div class="img-container">
+                                <img class="img-center" src=@item.Product.Image alt="">
+                            </div>
+                            <div class="mt-3 vstack gap-2">
+                                <div>
+                                    <span class="c-badge badge rounded-pill">@item.Product.Category.Name</span>
+                                </div>
+
+                                <div class="sub-title">
+                                    <a asp-controller="Product" asp-action="ProductEdit" asp-route-id="@item.Product.Id">@item.Product.Name</a>
+                                </div>
+
+                                <div class="c-text">
+                                    <span>@item.Product.Intro</span>
+                                </div>
+                            </div>
+                            @if (item.Product.SupplyStatus.Trim() == "Y")
+                            {
+                                <a asp-controller="Cart" asp-action="CartAdd" asp-route-pId=@item.Product.Id class="plus-btn" id=@item.Product.Id>
+                                    <i class="bi bi-plus-circle-fill"></i>
+                                </a>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="col-lg-2"></div>
+            <div class="col-12 col-lg-10">
+                @{
+                    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+                    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+                }
+
+                <div class="text-center">
+                    <a asp-action="Index"
+                       asp-route-pageNumber="@(Model.PageIndex - 1)"
+                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                       class="btn btn-lg btn-outline-primary @prevDisabled">
+                        上一頁
+                    </a>
+                    <a asp-action="Index"
+                       asp-route-pageNumber="@(Model.PageIndex + 1)"
+                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                       class="btn btn-lg btn-outline-primary @nextDisabled">
+                        下一頁
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<div class="main">
     <div class="row gx-0">
         <div class="col-xl-2 sidebar sidebar-margin">
 
@@ -71,8 +158,8 @@
                 </div>
 
                 @{
-                    var prevDisabled = !Model.HasPreviousPage ? "invisible" : "";
-                    var nextDisabled = !Model.HasNextPage ? "invisible" : "";
+                    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+                    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
                 }
 
                 <div class="text-center">
@@ -93,41 +180,41 @@
             </div>
         </div>
     </div>
-</div>
+</div>*@
 
 @section Scripts{
     @*<script>
-        $(function () {
-            $(".sidebar-btn").click(function (ev) {
-                ev.preventDefault();
-                let a = ev.target;
-                location.href = "/Product/Index?searchStr=" + a.textContent;
-            })
-        });
-    </script>*@
-@*<script type="text/javascript">
-    $(function () {
-        $(".plus-btn").click(function () {
-            $.ajax({
-                //請求模式
-                type: "put",
-                //請求的URL
-                url: "/Product/CartAdd",
-                //預期server responde的資料型態
-                dataType: "text",
-                //請求送出發送的資料(body內文json字串)
-                data: pId = "1",
-                //內文型態
-                contentType: "application/json",
-                success: function (result) {
-                    $("#msg").text(result);
-                },
-                error: function (err) {
-                    alert("error");
-                }
+            $(function () {
+                $(".sidebar-btn").click(function (ev) {
+                    ev.preventDefault();
+                    let a = ev.target;
+                    location.href = "/Product/Index?searchStr=" + a.textContent;
+                })
             });
-        });
-    });
-    
-</script>*@
+        </script>*@
+    @*<script type="text/javascript">
+            $(function () {
+                $(".plus-btn").click(function () {
+                    $.ajax({
+                        //請求模式
+                        type: "put",
+                        //請求的URL
+                        url: "/Product/CartAdd",
+                        //預期server responde的資料型態
+                        dataType: "text",
+                        //請求送出發送的資料(body內文json字串)
+                        data: pId = "1",
+                        //內文型態
+                        contentType: "application/json",
+                        success: function (result) {
+                            $("#msg").text(result);
+                        },
+                        error: function (err) {
+                            alert("error");
+                        }
+                    });
+                });
+            });
+
+        </script>*@
 }

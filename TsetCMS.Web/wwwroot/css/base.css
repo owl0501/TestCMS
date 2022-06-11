@@ -4,14 +4,28 @@
     --hint-blue: #E4F3F9;
     --sp-blue: #5955C4;
     --main-red: #DC153E;
+
     --func-hight: 3rem;
     /* 最外圍上下左右間距 */
     --h-margin: 5rem;
     --v-margin: 2rem;
 }
+* {
+    margin: 0;
+    padding: 0;
+}
 
-@media screen and (max-width:768px) {
+a {
+    text-decoration: none;
+    color: var(--base-blue);
+}
+
+    a:hover {
+        color: var(--base-blue);
+    }
+
+/*@media screen and (max-width:768px) {
     :root {
         --h-margin: 1.5rem;
     }
-}
+}*/
