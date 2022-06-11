@@ -7,4 +7,18 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="SupplyStatus" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="e72c74aa-71ad-49bb-ad63-426a5725a43e" ChangeDateTime="06/11/2022 12:33:30">
+    <Property Name="ElementName" Value="[dbo].[CartTable].[ShipId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[CartTable]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="ShipStatus" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="20b2055a-761d-44a3-871b-5e8856f88f9e" ChangeDateTime="06/11/2022 12:33:39">
+    <Property Name="ElementName" Value="[dbo].[CartTable].[Product_id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[CartTable]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="ProductId" />
+  </Operation>
 </Operations>

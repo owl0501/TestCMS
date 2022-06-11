@@ -8,11 +8,10 @@ namespace TestCMS.Entity.Entity
     public partial class ShippingTable
     {
         public int Id { get; set; }
-        public int ProductId { get; set; }
-        public int Amount { get; set; }
-        public DateTime CreateDate { get; set; }
         public string ShipId { get; set; }
+        public int CategoryId { get; set; }
+        public DateTime CreateTime { get; set; }
 
-        public virtual ProductTable Product { get; set; }
+        public virtual CategoryTable Category { get; set; }
     }
 }

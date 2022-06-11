@@ -39,11 +39,17 @@ namespace TestCMS.Entity.Entity
             {
                 entity.ToTable("CartTable");
 
+                entity.Property(e => e.ShipStatus)
+                    .IsRequired()
+                    .HasMaxLength(2)
+                    .HasDefaultValueSql("('no')")
+                    .IsFixedLength(true);
+
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.CartTables)
                     .HasForeignKey(d => d.ProductId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__CartTable__Produ__571DF1D5");
+                    .HasConstraintName("FK__CartTable__Produ__5AEE82B9");
             });
 
             modelBuilder.Entity<CategoryTable>(entity =>
@@ -59,9 +65,7 @@ namespace TestCMS.Entity.Entity
             {
                 entity.ToTable("ProductTable");
 
-                entity.Property(e => e.Image)
-                    .IsRequired()
-                    .HasMaxLength(300);
+                entity.Property(e => e.Image).HasMaxLength(300);
 
                 entity.Property(e => e.Intro).HasMaxLength(1000);
 
@@ -87,19 +91,19 @@ namespace TestCMS.Entity.Entity
             {
                 entity.ToTable("ShippingTable");
 
-                entity.Property(e => e.CreateDate).HasColumnType("datetime");
+                entity.Property(e => e.CreateTime).HasColumnType("datetime");
 
                 entity.Property(e => e.ShipId)
                     .IsRequired()
-                    .HasMaxLength(2)
+                    .HasMaxLength(15)
                     .HasColumnName("ShipID")
                     .IsFixedLength(true);
 
-                entity.HasOne(d => d.Product)
+                entity.HasOne(d => d.Category)
                     .WithMany(p => p.ShippingTables)
-                    .HasForeignKey(d => d.ProductId)
+                    .HasForeignKey(d => d.CategoryId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ShippingT__Produ__5441852A");
+                    .HasConstraintName("FK__ShippingT__Categ__59FA5E80");
             });
 
             OnModelCreatingPartial(modelBuilder);
