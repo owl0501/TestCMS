@@ -11,7 +11,7 @@
         <div class="row">
             <col-12>
                 <div class="func-line">
-                    <a asp-action="CategoryAdd" class="btn btn-lg func-btn ">+新增類別</a>
+                    <a asp-action="CategoryAdd" class="btn btn-lg func-btn invisible">+新增類別</a>
                     <a asp-action="ProductAdd" class="btn btn-lg func-btn ">+新增產品</a>
                 </div>
             </col-12>
@@ -61,7 +61,8 @@
                             </div>
                             @if (item.Product.SupplyStatus.Trim() == "Y")
                             {
-                                <a asp-controller="Cart" asp-action="CartAdd" asp-route-pId=@item.Product.Id class="plus-btn" id=@item.Product.Id>
+                                <a class="plus-btn" id=@item.Product.Id
+                                   asp-controller="Cart" asp-action="CartAdd" asp-route-pId=@item.Product.Id   >
                                     <i class="bi bi-plus-circle-fill"></i>
                                 </a>
                             }
@@ -94,93 +95,6 @@
         </div>
     </div>
 </div>
-
-@*<div class="main">
-    <div class="row gx-0">
-        <div class="col-xl-2 sidebar sidebar-margin">
-
-            @foreach (var item in ViewBag.Categories)
-            {
-                <a class="btn btn-lg sidebar-btn" id=@item.Id asp-route-searchStr="@item.Name">@item.Name</a>
-            }
-
-        </div>
-        <div class="col">
-            <div class="func-line col-12">
-                <a asp-action="CategoryAdd" class="btn btn-lg func-btn ">+新增類別</a>
-                <a asp-action="ProductAdd" class="btn btn-lg func-btn ">+新增產品</a>
-            </div>
-
-            <div class="p-body">
-                <div class="row">
-                    @foreach (var item in Model)
-                    {
-                        <div class="col-xl-3 col-lg-6">
-                            <div class="c-card position-relative">
-                                @if (item.IsNew)
-                                {
-                                    <span class="tag-new">
-                                        新上市
-                                    </span>
-                                }
-                                @if (item.Product.SupplyStatus.Trim() == "N")
-                                {
-                                    <span class="tag-noship">
-                                        已下架
-                                    </span>
-                                }
-                                <div class="img-container">
-                                    <img class="img-center" src=@item.Product.Image alt="">
-                                </div>
-                                <div class="mt-3 vstack gap-2">
-                                    <div>
-                                        <span class="c-badge badge rounded-pill">@item.Product.Category.Name</span>
-                                    </div>
-
-                                    <div class="sub-title">
-                                        <a asp-controller="Product" asp-action="ProductEdit" asp-route-id="@item.Product.Id">@item.Product.Name</a>
-                                    </div>
-
-                                    <div class="c-text">
-                                        <span>@item.Product.Intro</span>
-                                    </div>
-                                </div>
-                                @if (item.Product.SupplyStatus.Trim() == "Y")
-                                {
-                                    <a asp-controller="Cart" asp-action="CartAdd" asp-route-pId=@item.Product.Id class="plus-btn" id=@item.Product.Id>
-                                        <i class="bi bi-plus-circle-fill"></i>
-                                    </a>
-                                }
-
-                            </div>
-                        </div>
-                    }
-                </div>
-
-                @{
-                    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-                    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-                }
-
-                <div class="text-center">
-                    <a asp-action="Index"
-                       asp-route-pageNumber="@(Model.PageIndex - 1)"
-                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                       class="btn btn-lg btn-outline-primary @prevDisabled">
-                        上一頁
-                    </a>
-                    <a asp-action="Index"
-                       asp-route-pageNumber="@(Model.PageIndex + 1)"
-                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                       class="btn btn-lg btn-outline-primary @nextDisabled">
-                        下一頁
-                    </a>
-                </div>
-
-            </div>
-        </div>
-    </div>
-</div>*@
 
 @section Scripts{
     @*<script>
