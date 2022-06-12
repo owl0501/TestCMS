@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using TestCMS.Business.Abstract;
 using TestCMS.Entity.Entity;
 using Microsoft.Extensions.DependencyInjection;
+using TestCMS.Entity.DTO;
 
 namespace TsetCMS.Web.Controllers
 {
@@ -27,16 +28,17 @@ namespace TsetCMS.Web.Controllers
         }
 
         //新增出貨商品
-        public IActionResult ShippingAdd(IList<int> cartIdList,int CategoryId)
+        [HttpPost]
+        public IActionResult ShippingAdd([FromBody]ShippingDTO dto)
         {
             string newShipId = CreateShipId();
-            ////變更所有的勾選的Cart item的shippId
-            foreach (var cartId in cartIdList)
+            //變更所有的勾選的Cart item的shippId
+            foreach (var cartId in dto.CartIdList)
             {
                 var item = _context.CartTable.Find(cartId);
                 if (item != null)
                 {
-                    //item.shipId = newShipId;
+                    item.ShipStatus = newShipId;
                     _context.Update(item);
                     _context.SaveChanges();
                 }
@@ -44,15 +46,17 @@ namespace TsetCMS.Web.Controllers
             //新增shipping item
             ShippingTable ship = new ShippingTable
             {
-                ShipId = newShipId,
-                ProductId = CategoryId,
-                CreateDate = DateTime.Now
+                ShipId = DateTime.Now.ToString("yyyyMMddHHmm")+dto.CategoryId+newShipId,
+                CategoryId = dto.CategoryId,
+                CreateTime = DateTime.Now
             };
             _context.ShippingTable.Add(ship);
             _context.SaveChanges();
-            return RedirectToAction("CartIndex", "Cart");
+
+            return Ok($"Category is {dto.CategoryId}");
         }
         //顯示出貨清單
+        [HttpGet]
         public IActionResult ShippingListResult()
         {
             var query = _context.ShippingTable.ToList();
@@ -60,12 +64,18 @@ namespace TsetCMS.Web.Controllers
         }
 
         //刪除商品
-        public async Task<IActionResult> Complete(int id)
+        public IActionResult Complete(string shipId)
         {
-            var item = await _context.ShippingTable.FindAsync(id);
+            //刪除CartTable
+            string shipStatus = shipId.Substring(shipId.Length - 2, 2);
+            var items = _context.CartTable.Where(d => d.ShipStatus == shipStatus);
+            _context.CartTable.RemoveRange(items);
+            _context.SaveChanges();
+            //刪除ShippingTable
+            var item = _context.ShippingTable.FirstOrDefault(d => d.ShipId == shipId);
             _context.ShippingTable.Remove(item);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("CartIndex","Cart");
+            _context.SaveChanges();
+            return RedirectToAction("ShippingListResult");
         }
 
         public string CreateShipId()
@@ -75,7 +85,7 @@ namespace TsetCMS.Web.Controllers
             string rn = String.Format("{0:00}", r.Next(0, 100).ToString());
             var shipIdList = _context.ShippingTable.ToList();
                              
-            while(shipIdList.Where(d=>d.ShipId==rn)!=null)
+            while(shipIdList.Where(d=>d.ShipId==rn).Any())
             {
                 rn = String.Format("{0:00}", r.Next(0, 100).ToString());
             }

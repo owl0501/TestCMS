@@ -8,10 +8,7 @@
                         @Html.DisplayNameFor(model => model.ShipId)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.ProductId)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.CreateDate)
+                        @Html.DisplayNameFor(model => model.CreateTime)
                     </th>
                     <th></th>
                 </tr>
@@ -21,16 +18,14 @@
                 {
                     <tr>
                         <td>
+                            
                             @Html.DisplayFor(modelItem => item.ShipId)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.ProductId)
+                            @Html.DisplayFor(modelItem => item.CreateTime)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.CreateDate)
-                        </td>
-                        <td>
-                            <a asp-action="Complete" asp-route-id="@item.ShipId">完成出貨</a>
+                            <a asp-action="Complete" asp-route-shipId="@item.ShipId">完成出貨</a>
                         </td>
                     </tr>
                 }
