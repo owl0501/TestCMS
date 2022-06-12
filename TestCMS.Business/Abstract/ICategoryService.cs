@@ -11,20 +11,22 @@ namespace TestCMS.Business.Abstract
         /// 查詢所有類別
         /// </summary>
         /// <returns></returns>
-        Task<IList<CategoryTable>> Get();
+        IEnumerable<CategoryTable> Get();
+
 
         /// <summary>
         /// 新增類別
         /// </summary>
         /// <param name="category"></param>
         /// <returns></returns>
-        Task<CategoryTable> CreateCategory(CategoryTable category);
+        string CreateCategory(CategoryTable category);
 
+        
         /// <summary>
-        /// 刪除資料
+        /// 檢查類型是否存在
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        Task Delete(int id);
+        bool CategoryExists(string name);
     }
 }

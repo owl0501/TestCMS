@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TestCMS.Business.Abstract;
@@ -14,39 +15,44 @@ namespace TestCMS.Business.Concrete
         /// <summary>
         /// 建構子DI
         /// </summary>
-        private readonly ICategoryRepo _repo;
+        private readonly IGeneralRepo<CategoryTable> _repo;
         public CategoryService(IServiceProvider provider)
         {
-            _repo = provider.GetRequiredService<ICategoryRepo>();
+            _repo = provider.GetRequiredService<IGeneralRepo<CategoryTable>>();
         }
+
+        public bool CategoryExists(string name)
+        {
+            return _repo.Filter().Any(d => d.Name == name);
+        }
+
         /// <summary>
         /// 新增類別
         /// </summary>
         /// <param name="category"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public Task<CategoryTable> CreateCategory(CategoryTable category)
+        public string CreateCategory(CategoryTable category)
         {
-            return _repo.Create(category);
+            string msg;
+            if (CategoryExists(category.Name))
+            {
+                _repo.Create(category);
+                msg = "成功";
+            }
+            else
+            {
+                msg = "已存在";
+            }
+            return msg;
         }
-        /// <summary>
-        /// 刪除類別
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public Task Delete(int id)
-        {
-            return _repo.Delete(id);
-        }
-
         /// <summary>
         /// 查詢所有類別
         /// </summary>
         /// <returns></returns>
-        public Task<IList<CategoryTable>> Get()
+        public IEnumerable<CategoryTable> Get()
         {
-            return _repo.Get();
+            return _repo.Filter();
         }
     }
 }
