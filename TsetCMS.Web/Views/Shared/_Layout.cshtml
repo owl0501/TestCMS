@@ -13,13 +13,15 @@
     <div class="container position-relative">
         <div class="row">
             <div class="col-12">
-                <a asp-controller="Cart" asp-action="CartIndex" class="position-absolute top-50 end-0 translate-middle-y fw-bolder">
-                    待出貨清單
-                    <span class="position-absolute top-0 start-100 badge rounded-pill tip">
-                        @ViewData["CartAmount"]
-                        <span class="visually-hidden">unread messages</span>
-                    </span>
-                </a>
+                <div class="position-absolute top-50 end-0 translate-middle-y fw-bolder">
+                    <a asp-controller="Cart" asp-action="CartIndex">
+                        待出貨清單
+                        <span class="position-absolute top-0 start-100 badge rounded-pill tip">
+                            @ViewData["CartAmount"]
+                            <span class="visually-hidden">unread messages</span>
+                        </span>
+                    </a>
+                </div>
                 <a asp-controller="Product" asp-action="Index" class="logo c-base-blue">
                     <img src="~/img/changing_logo.png" alt="CGlogo" class="mx-auto d-block">
                     <p>全景產品管理後台</p>

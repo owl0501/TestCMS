@@ -1,7 +1,5 @@
 ﻿@import 'base.css';
 
-
-
 .redstar:before {
     content: "*";
     color: red;
@@ -9,7 +7,6 @@
 .btn {
     border-radius: .5rem;
 }
-
     .btn:hover {
         opacity: .6;
         color: whitesmoke;
@@ -20,11 +17,14 @@
 }
 .c-dark-blue {
     color: var(--dark-blue);
-}.c-hint-blue {
+}
+.c-hint-blue {
     color: var(--hint-blue);
-}.c-sp-blue {
+}
+.c-sp-blue {
     color: var(--sp-blue);
-}.c-main-red {
+}
+.c-main-red {
     color: var(--main-red);
 }
 
@@ -347,9 +347,8 @@ input[type=checkbox]:checked {
     min-height:calc( 12rem *2 );
 }
 
-/*@media screen and (max-width:768px) {
-    .sidebar-margin {
-        margin-top: 0;
-        margin-right: 0;
+@media screen and (max-width:576px) {
+    .card-item {
+        width:100%;
     }
-}*/
+}
