@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,34 +15,42 @@ namespace TestCMS.Business.Abstract
         /// 查詢所有資料
         /// </summary>
         /// <returns></returns>
-        Task<IList<ProductTable>> Get();
+        IEnumerable<ProductTable> Get();
 
         /// <summary>
         /// 以類別查詢
         /// </summary>
         /// <param name="categoryId"></param>
         /// <returns></returns>
-        Task<IList<ProductTable>> Get(string categoryId);
+        IEnumerable<ProductTable> GetByCategoryId(int categoryId);
 
         /// <summary>
-        /// 新增資料
+        /// 新增產品
         /// </summary>
         /// <param name="product"></param>
         /// <returns></returns>
-        Task<ProductTable> CreateProduct(ProductTable product, IFormFile file, string rootPath);
+        int CreateProduct(ProductTable product, IFormFile file, string rootPath);
 
+
+        /// <summary>
+        /// 取得編輯資料
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        object GetEditData(int? id);
         /// <summary>
         /// 修改資料
         /// </summary>
         /// <param name="product"></param>
         /// <returns></returns>
-        Task Update(ProductTable product);
+        IActionResult Update(ProductTable product);
 
         /// <summary>
-        /// 刪除資料
+        /// 檢查產品是否存在
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task Delete(int id);
+        bool ProductExists(int id);
+
     }
 }

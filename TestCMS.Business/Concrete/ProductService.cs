@@ -10,81 +10,73 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using System.Linq;
+using TestCMS.Helper;
+using Microsoft.AspNetCore.Mvc;
 
 namespace TestCMS.Business.Concrete
 {
-    public class ProductService : IProductService
+    public class ProductService : ControllerBase,IProductService
     {
-        /// <summary>
-        /// 建構子DI
-        /// </summary>
-        private readonly IProductRepo _repo;
-        private readonly ICategoryService _categoryService;
+
+        private readonly IGeneralRepo<ProductTable> _productRepo;
         public ProductService(IServiceProvider provider)
         {
-            _repo = provider.GetRequiredService<IProductRepo>();
-            _categoryService = provider.GetRequiredService<ICategoryService>();
+            _productRepo = provider.GetRequiredService<IGeneralRepo<ProductTable>>();
         }
 
-        /// <summary>
-        /// 新增產品
-        /// </summary>
-        /// <param name="product"></param>
-        /// <param name="file"></param>
-        /// <param name="altPath"></param>
-        /// <returns></returns>
-        public Task<ProductTable> CreateProduct(ProductTable product, IFormFile file, string rootPath)
+        public int CreateProduct(ProductTable product, IFormFile file, string rootPath)
         {
-            if (!Directory.Exists(rootPath))
+            //另存圖片路徑
+            string saveFolder = @"\UploadFolder\";
+            string altPath = rootPath + saveFolder;
+
+            if (!Directory.Exists(altPath))
             {
-                DirectoryInfo di = Directory.CreateDirectory(rootPath);
+                DirectoryInfo imgFolder = Directory.CreateDirectory(altPath);
             }
             //另存圖片
-            string altPath = $@"{rootPath}\UploadFolder\{file.FileName}";
-            using (var stream = new FileStream(altPath, FileMode.Create))
+            using (var stream = new FileStream(altPath + file.FileName, FileMode.Create))
             {
                 file.CopyTo(stream);
             }
 
             //設定資料
-            //name
-            //CategoryId
-            //image path
-            product.Image = $@"\UploadFolder\{file.FileName}";
-            //intro
-            //releaseDatetime(YYMMDDhhmm)
+            product.Image = saveFolder + file.FileName;
             product.ReleaseDatetime = DateTime.Now;
             //SupplyStatus
-
-            return _repo.Create(product);
+            return (int)_productRepo.Create(product);
         }
 
-        public Task Delete(int id)
+        public IEnumerable<ProductTable> Get()
         {
-            return _repo.Delete(id);
-        }
-        /// <summary>
-        /// 查詢所有顯示資料
-        /// </summary>
-        /// <returns></returns>
-        public async Task<IList<ProductTable>> Get()
-        {
-            //var products = await _repo.Get();
-            return await _repo.Get();
-        }
-        /// <summary>
-        /// 以類別查詢
-        /// </summary>
-        /// <param name="categoryId"></param>
-        /// <returns></returns>
-        public Task<IList<ProductTable>> Get(string category)
-        {
-            return _repo.Get(category);
+
+            return _productRepo.Filter();
         }
 
-        public Task Update(ProductTable product)
+        public IEnumerable<ProductTable> GetByCategoryId(int categoryId)
         {
-            return _repo.Update(product);
+            return _productRepo.Filter(d => d.CategoryId == categoryId);
+        }
+
+        public object GetEditData(int? id)
+        {
+            var product = _productRepo.Filter(d=>d.Id==id).FirstOrDefault();
+            return product;
+        }
+
+        public IActionResult Update(ProductTable product)
+        {
+            if (!product.Image.Contains("UploadFolder"))
+            {
+                product.Image = ImageHelper.SaveImagePath(product.Image);
+            }
+            _productRepo.Update(product);
+            return Ok();
+        }
+
+        public bool ProductExists(int id)
+        {
+            return _productRepo.Filter().Any(d => d.Id == id);
         }
     }
 }
