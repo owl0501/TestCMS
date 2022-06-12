@@ -174,7 +174,8 @@ namespace TsetCMS.Web.Controllers
         private void CartAmoutToViewData()
         {
             var cartQuery = _context.CartTable.ToList();
-            foreach (var item in cartQuery)
+            var cartItem = cartQuery.Where(d => d.ShipStatus == "no");
+            foreach (var item in cartItem)
             {
                 CartAmount += item.Amount;
             }

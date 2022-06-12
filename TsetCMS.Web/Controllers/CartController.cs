@@ -39,7 +39,7 @@ namespace TsetCMS.Web.Controllers
 
         public async Task<IActionResult> CartAdd(int pId)
         {
-            var result = _context.CartTable.FirstOrDefault(x => x.ProductId == pId);
+            var result = _context.CartTable.FirstOrDefault(x => x.ProductId == pId && x.ShipStatus=="no");
             if (result != null)
             {
                 //update
@@ -98,10 +98,11 @@ namespace TsetCMS.Web.Controllers
         /// <summary>
         /// 傳amount to View
         /// </summary>
-        private void CartAmoutToViewData()
+        public void CartAmoutToViewData()
         {
             var cartQuery = _context.CartTable.ToList();
-            foreach (var item in cartQuery)
+            var cartItem = cartQuery.Where(d => d.ShipStatus == "no");
+            foreach (var item in cartItem)
             {
                 CartAmount += item.Amount;
             }
