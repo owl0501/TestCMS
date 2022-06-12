@@ -6,7 +6,10 @@
 
 <div class="main">
     <div class="container">
-        <h1 class="mb-5">新增產品</h1>
+        <div class="mb-4">
+            <h1 class="fw-bolder c-base-blue">新增產品</h1>
+        </div>
+        
         <form asp-controller="Product" asp-action="ProductAdd" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger "></div>
 
@@ -33,14 +36,16 @@
                         <div class="input-group">
                             <input type="file" class="form-control" id="myimg" name="myimg" accept=".jpg,.png,.gif,.svg">
                             <input id="image" type="hidden" asp-for="Image" />
-                            <label class="input-group-text" for="myimg">選擇圖片</label>
+                            <label class="input-group-text btn submit-btn bg-dark-blue" for="myimg">選擇圖片</label>
                         </div>
                         <span asp-validation-for="Image" class="text-danger fs-6"></span>
                     </div>
                 </div>
 
                 <div class="row">
-                    <label asp-for="Intro" class="control-label col-md-3"></label>
+                    &nbsp;
+                    <label class="control-label col-md-3 blank-space"
+                           asp-for="Intro"></label>
                     <div class="col-md">
                         <textarea asp-for="Intro" class="form-control" rows="6"></textarea>
                     </div>
@@ -49,7 +54,7 @@
                 <input type="hidden" asp-for="SupplyStatus" value="Y" />
 
                 <div class="form-group d-flex flex-row-reverse">
-                    <input type="submit" value="確定" class="btn btn-lg submit-btn" />
+                    <input type="submit" value="確定" class="btn btn-lg submit-btn bg-base-blue" />
                 </div>
             </div>
         </form>

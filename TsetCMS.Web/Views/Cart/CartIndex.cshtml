@@ -6,30 +6,29 @@
 
 <div class="main">
     <div class="container">
-        <div class="position-relative">
-            <h1 class="mb-5">待出貨清單</h1>
-            <div class="position-absolute top-50 end-0 translate-middle-y fw-bolder">
-                <a asp-controller="Shipping" asp-action="ShippingListResult">
-                    出貨清單
-                </a>
-            </div>
-            
+        <div class="mb-4">
+            <h1 class="fw-bolder c-base-blue d-inline">待出貨清單</h1>
+            >
+            <a class="fw-bolder"
+               asp-controller="Shipping" asp-action="ShippingListResult">
+                出貨清單
+            </a>
         </div>
         
         <form asp-controller="Cart">
-            <div class="cart-demo">
+            <div class="cart-container">
                 @foreach (var item in Model)
                 {
                     @if (item.ShipStatus == "no")
                     {
-                        <div class="cart-item">
+                        <div class="cart-item shadow">
                             <input class="form-check-input mx-4" type="checkbox" name="@item.Id" value=@item.Product.Category.Id>
                             <div class="image-demo">
                                 <img class="img-thumbnail me-5 preview-img " src=@item.Product.Image>
                             </div>
 
                             <div class="position-relative h-100 me-5">
-                                <span class="category-bdge badge rounded-pill position-absolute top-0">@item.Product.Category.Name</span>
+                                <span class="category-badge badge rounded-pill position-absolute top-0 bg-sp-blue">@item.Product.Category.Name</span>
 
                                 <h3 class="cart-title fw-bolder">&nbsp;@item.Product.Name</h3>
                             </div>
@@ -52,7 +51,7 @@
                 }
             </div>
             <div class="d-flex flex-row-reverse">
-                <a class="btn btn-lg submit-btn" onclick="return SelectCheck();">
+                <a class="btn btn-lg submit-btn bg-base-blue" onclick="return SelectCheck();">
                     出貨
                 </a>
             </div>
@@ -94,7 +93,7 @@
                     contentType: "application/json; charset=utf-8",
                     success: function (data) {
                         location.href = "/Shipping/ShippingListResult";
-                        alert("成功\n"+data);
+                        @*console.log("成功\n"+data);*@
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
                         alert("XMLHttpRequest\n" + XMLHttpRequest + "textStatus\n" + textStatus);

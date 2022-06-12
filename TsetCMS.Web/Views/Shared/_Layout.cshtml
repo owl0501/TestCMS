@@ -13,8 +13,8 @@
     <div class="container position-relative">
         <div class="row">
             <div class="col-12">
-                <div class="position-absolute top-50 end-0 translate-middle-y fw-bolder">
-                    <a asp-controller="Cart" asp-action="CartIndex">
+                <div class="top-link fw-bolder">
+                    <a class="position-relative" asp-controller="Cart" asp-action="CartIndex">
                         待出貨清單
                         <span class="position-absolute top-0 start-100 badge rounded-pill tip">
                             @ViewData["CartAmount"]
@@ -36,7 +36,7 @@
     <footer class="footer mt-auto py-3 bg-light">
         <div class="container text-center">
             <div class="text-muted d-flex justify-content-center flex-column flex-lg-row lh-base">
-                <span>&copy; @DateTime.Now.Year 全景軟體股份有限公司&nbsp;版權所有</span>
+                <span>&copy; 2022 全景軟體股份有限公司&nbsp;版權所有</span>
             </div>
         </div>
     </footer>

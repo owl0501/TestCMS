@@ -5,11 +5,11 @@
 }
 <div class="main">
     <div class="container">
-        <h1 class="mb-5">@Model.Name</h1>
-
+        <div class="mb-4">
+            <h1 class="fw-bolder c-base-blue">@Model.Name</h1>
+        </div>
         <form asp-controller="Product" asp-action="ProductEdit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger "></div>
-
             <div class="d-grid gap-4 fs-2">
                 <div class="row">
                     <label asp-for="CategoryId" class=" col-md-3 redstar"></label>
@@ -33,7 +33,7 @@
                         <div class="input-group">
                             <input asp-for="Image" id="srcImage" class="form-control bg-white" readonly />
                             <input type="file" class="d-none form-control" id="myimg" asp-for="Image" accept=".jpg,.png,.gif,.svg">
-                            <label class="input-group-text btn submit-btn" for="myimg">選擇圖片</label>
+                            <label class="input-group-text btn submit-btn bg-dark-blue" for="myimg">選擇圖片</label>
                         </div>
                         <span asp-validation-for="Image" class="text-danger fs-6"></span>
                     </div>
@@ -54,6 +54,7 @@
                     </div>
                 </div>
                 <div class="row">
+                    &nbsp;
                     <label asp-for="Intro" class="control-label col-md-3"></label>
                     <div class="col-md">
                         <textarea asp-for="Intro" class="form-control" rows="6"></textarea>
@@ -68,7 +69,7 @@
 
 
                 <div class="form-group d-flex flex-row-reverse">
-                    <input type="submit" value="確定" class="btn btn-lg submit-btn" />
+                    <input type="submit" value="確定" class="btn btn-lg submit-btn bg-base-blue" />
                 </div>
             </div>
         </form>
