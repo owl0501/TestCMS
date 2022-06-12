@@ -1,46 +1,109 @@
-﻿@model IEnumerable<TestCMS.Entity.Entity.CartTable>;
+﻿@model IEnumerable<TestCMS.Entity.Entity.CartTable>
 
 @{
     ViewData["Title"] = "待出貨清單";
 }
+
 <div class="main">
     <div class="container">
+        <div class="position-relative">
+            <h1 class="mb-5">待出貨清單</h1>
+            <div class="position-absolute top-50 end-0 translate-middle-y fw-bolder">
+                <a asp-controller="Shipping" asp-action="ShippingListResult">
+                    出貨清單
+                </a>
+            </div>
+            
+        </div>
+        
         <form asp-controller="Cart">
             <div class="cart-demo">
                 @foreach (var item in Model)
                 {
-                    <div class="cart-item">
-                        <input class="form-check-input mx-4" type="checkbox" name="c1">
-                        <div class="image-demo">
-                            <img class="img-thumbnail me-5 preview-img " src=@item.Product.Image>
-                        </div>
+                    @if (item.ShipStatus == "no")
+                    {
+                        <div class="cart-item">
+                            <input class="form-check-input mx-4" type="checkbox" name="@item.Id" value=@item.Product.Category.Id>
+                            <div class="image-demo">
+                                <img class="img-thumbnail me-5 preview-img " src=@item.Product.Image>
+                            </div>
 
-                        <div class="position-relative h-100 me-5">
-                            <span class="category-bdge badge rounded-pill position-absolute top-0">@item.Product.Category.Name</span>
+                            <div class="position-relative h-100 me-5">
+                                <span class="category-bdge badge rounded-pill position-absolute top-0">@item.Product.Category.Name</span>
 
-                            <h3 class="cart-title fw-bolder">&nbsp;@item.Product.Name</h3>
-                        </div>
+                                <h3 class="cart-title fw-bolder">&nbsp;@item.Product.Name</h3>
+                            </div>
 
-                        <div class="btn-group me-4" role="group" aria-label="Basic outlined example">
-                            <a asp-action="UpdateAmount" asp-route-pId=@item.ProductId asp-route-mode="decrease"
-                               class="btn btn-outline-dark shadow-none">
-                                <i class="bi bi-dash"></i>
-                            </a>
-                            <button type="button" class="btn btn-outline-dark text-part">@item.Amount</button>
-                            <a asp-action="UpdateAmount" asp-route-pId=@item.ProductId asp-route-mode="increase"
-                               class="btn btn-outline-dark shadow-none">
-                                <i class="bi bi-plus"></i>
-                            </a>
+                            <div class="btn-group me-4" role="group" aria-label="Basic outlined example">
+                                <a asp-action="UpdateAmount" asp-route-pId=@item.ProductId asp-route-mode="decrease"
+                                   class="btn btn-outline-dark shadow-none">
+                                    <i class="bi bi-dash"></i>
+                                </a>
+                                <button type="button" class="btn btn-outline-dark text-part">@item.Amount</button>
+                                <a asp-action="UpdateAmount" asp-route-pId=@item.ProductId asp-route-mode="increase"
+                                   class="btn btn-outline-dark shadow-none">
+                                    <i class="bi bi-plus"></i>
+                                </a>
+                            </div>
+                            <a onclick="return confirm('你確定要刪除嗎?')"
+                               asp-action="RemoveItem" asp-route-id=@item.Id class="btn btn-del">刪除</a>
                         </div>
-                        <a asp-action="RemoveItem" asp-route-id=@item.Id class="btn btn-del" onclick="return confirm('你確定要刪除嗎?')">刪除</a>
-                    </div>
+                    }
                 }
             </div>
-
-            <div class="form-group d-flex flex-row-reverse">
-                <input type="submit" value="出貨" class="btn btn-lg submit-btn" />
+            <div class="d-flex flex-row-reverse">
+                <a class="btn btn-lg submit-btn" onclick="return SelectCheck();">
+                    出貨
+                </a>
             </div>
+
         </form>
     </div>
-    
+
 </div>
+@section Scripts{
+    <script>
+        function SelectCheck() {
+            var ipCheck = $("input[type='checkbox']:checked");
+            let isSuccess = true;
+            let dto = {};
+            if (ipCheck.length == 0) {
+                alert('請勾選資料');
+                isSuccess = false;
+            }
+            else {
+                let cklist = [];
+                let categoryId = ipCheck[0].value;
+                console.log(categoryId);
+                ipCheck.each(function (idx, item) {
+                    if (categoryId != item.value) {
+                        alert("產品類型衝突")
+                        isSuccess = false;
+                    }
+                    cklist.push(Number(item.name));
+                });
+                dto["CartIdList"] = cklist;
+                dto["CategoryId"] = Number(categoryId);
+            }
+            if (isSuccess) {
+                @*alert('成功\n' + JSON.stringify(dto));*@
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("ShippingAdd", "Shipping")',
+                    data: JSON.stringify(dto),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        location.href = "/Shipping/ShippingListResult";
+                        alert("成功\n"+data);
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert("XMLHttpRequest\n" + XMLHttpRequest + "textStatus\n" + textStatus);
+                    }
+                });
+            }
+            return isSuccess;
+        }
+    </script>
+
+
+}
