@@ -1,0 +1,19 @@
+﻿@model TestCMS.Entity.Entity.CategoryTable;
+
+@{
+    ViewData["Title"] = "新增類別";
+}
+<div class="col-sm-4 m-auto border border-primary p-3 mt-5">
+    <form asp-controller="Category">
+        <labe class="form-label mb-3">新增類別</labe>
+        <input class="form-control mb-3" asp-for="Name" type="text" placeholder="請輸入類別" />
+        <input class="form-control btn-primary mb-3" type="submit" value="確認" />
+
+        <div class="text-center">
+            <a asp-controller="Product" asp-action="ProductQueryResult">回首頁</a>
+        </div>
+    </form>
+</div>
+<span class="d-block text-center">@ViewBag.isOK</span>
+
+
