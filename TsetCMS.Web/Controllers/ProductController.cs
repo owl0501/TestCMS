@@ -22,30 +22,24 @@ namespace TsetCMS.Web.Controllers
         /// <summary>
         /// 建構子DI
         /// </summary>
-        private readonly CMSDBContext _context;
         private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
-        //private readonly ICartService _cartService;
+        private readonly ICartService _cartService;
         private readonly ILogger<ProductController> _logger;
         private readonly string _wwwroot;
-        public int CartAmount = 0;
-        public ProductController(CMSDBContext context, ILogger<ProductController> logger, IWebHostEnvironment env, IServiceProvider provider)
+        public ProductController(ILogger<ProductController> logger, IWebHostEnvironment env, IServiceProvider provider)
         {
-            _context = context;
             _logger = logger;
             _productService = provider.GetRequiredService<IProductService>();
             _categoryService = provider.GetService<ICategoryService>();
-            //_cartService = provider.GetService<ICartService>();
+            _cartService = provider.GetService<ICartService>();
             // 預設上傳目錄下(wwwroot)
             _wwwroot = $@"{env.WebRootPath}";
-
-
         }
 
         [HttpGet]
         public IActionResult ProductQueryResult(string searchStr, string currentFilter, int? pageNumber)
         {
-            CartAmoutToViewData();
             var productQuery = _productService.Get();
 
             if (searchStr != null)
@@ -79,14 +73,15 @@ namespace TsetCMS.Web.Controllers
             var tmp = PaginatedList<ProductDataVM>.CreatePage(pq.AsNoTracking(), pageNumber ?? 1, pageSize);
 
             ViewData["Categories"] = _categoryService.Get().ToList();
+            ViewData["CartAmount"] = _cartService.CartAmoutToViewData();
             return View(tmp);
         }
 
         [HttpGet]
         public IActionResult ProductItemCreate()
         {
-            CartAmoutToViewData();
             ViewData["Categories"] = new SelectList(_categoryService.Get(), "Id", "Name");
+            ViewData["CartAmount"] = _cartService.CartAmoutToViewData();
             return View();
         }
 
@@ -102,14 +97,12 @@ namespace TsetCMS.Web.Controllers
                     return RedirectToAction(nameof(ProductQueryResult));
                 }
             }
-            ViewData["Categories"] = new SelectList(_categoryService.Get(), "Id", "Name", product.CategoryId);
             return View(product);
         }
 
         [HttpGet]
         public IActionResult ProductItemEdit(int? id)
         {
-            CartAmoutToViewData();
             if (id == null)
             {
                 return NotFound();
@@ -119,6 +112,8 @@ namespace TsetCMS.Web.Controllers
             {
                 ////傳Categories model給create view
                 ViewData["Categories"] = new SelectList(_categoryService.Get(), "Id", "Name");
+                ViewData["CartAmount"] = _cartService.CartAmoutToViewData();
+
                 return View(result);
             }
             return NotFound();
@@ -153,17 +148,5 @@ namespace TsetCMS.Web.Controllers
             }
             return View(product);
         }
-
-        private void CartAmoutToViewData()
-        {
-            var cartQuery = _context.CartTable.ToList();
-            var cartItem = cartQuery.Where(d => d.ShipStatus == "no");
-            foreach (var item in cartItem)
-            {
-                CartAmount += item.Amount;
-            }
-            ViewData["CartAmount"] = CartAmount;
-        }
-
     }
 }

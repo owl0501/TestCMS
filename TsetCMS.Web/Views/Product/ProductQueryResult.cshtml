@@ -11,7 +11,7 @@
         <div class="row">
             <col-12>
                 <div class="func-line">
-                    <a asp-controller="Category" asp-action="CategoryAdd" class="btn btn-lg func-btn invisible">+新增類別</a>
+                    <a asp-controller="Category" asp-action="CategoryAdd" class="btn btn-lg func-btn">+新增類別</a>
                     <a asp-action="ProductItemCreate" class="btn btn-lg func-btn ">+新增產品</a>
                 </div>
             </col-12>
@@ -62,7 +62,7 @@
                             @if (item.Product.SupplyStatus.Trim() == "Y")
                             {
                                 <a class="plus-btn" id=@item.Product.Id
-                                   asp-controller="Cart" asp-action="CartAdd" asp-route-pId=@item.Product.Id   >
+                                   asp-controller="Cart" asp-action="CartItemAdd" asp-route-productId=@item.Product.Id   >
                                     <i class="bi bi-plus-circle-fill"></i>
                                 </a>
                             }

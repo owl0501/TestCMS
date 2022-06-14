@@ -31,13 +31,19 @@ namespace TsetCMS.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-            services.AddScoped<ICategoryRepo, CategoryRepo>();
+            #region Category Service
             services.AddScoped<ICategoryService, CategoryService>();
-            services.AddScoped<IProductRepo, ProductRepo>();
+            services.AddScoped<IGeneralRepo<CategoryTable>, GeneralRepo<CategoryTable>>();
+            #endregion
+            #region Product Service
             services.AddScoped<IProductService, ProductService>();
-            services.AddScoped<ICartRepo, CartRepo>();
+            services.AddScoped<IGeneralRepo<ProductTable>, GeneralRepo<ProductTable>>();
+            #endregion
+
+            #region Cart Service
             services.AddScoped<ICartService, CartService>();
+            services.AddScoped<IGeneralRepo<CartTable>, GeneralRepo<CartTable>>();
+            #endregion
 
             services.AddControllersWithViews();
             //Register dbcontext
@@ -69,7 +75,7 @@ namespace TsetCMS.Web
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Product}/{action=Index}/{id?}");
+                    pattern: "{controller=Product}/{action=ProductQueryResult}/{id?}");
             });
         }
     }

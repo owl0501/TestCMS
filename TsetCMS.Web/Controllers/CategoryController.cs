@@ -15,17 +15,17 @@ namespace TsetCMS.Web.Controllers
     {
         private readonly ILogger<ProductController> _logger;
         private readonly ICategoryService _categoryService;
-        public CategoryController(CMSDBContext context, ILogger<ProductController> logger, IWebHostEnvironment env, IServiceProvider provider)
+        private readonly ICartService _cartService;
+        public CategoryController(ILogger<ProductController> logger, IWebHostEnvironment env, IServiceProvider provider)
         {
             _logger = logger;
             _categoryService = provider.GetService<ICategoryService>();
-
-
+            _cartService = provider.GetService<ICartService>();
         }
         [HttpGet]
         public IActionResult CategoryAdd()
         {
-            //CartAmoutToViewData();
+            ViewData["CartAmount"] = _cartService.CartAmoutToViewData();
             return View();
         }
         [HttpPost]

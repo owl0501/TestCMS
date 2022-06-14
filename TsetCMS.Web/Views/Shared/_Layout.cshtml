@@ -14,7 +14,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="top-link fw-bolder">
-                    <a class="position-relative" asp-controller="Cart" asp-action="CartIndex">
+                    <a class="position-relative" asp-controller="Cart" asp-action="CartQueryResult">
                         待出貨清單
                         <span class="position-absolute top-0 start-100 badge rounded-pill tip">
                             @ViewData["CartAmount"]
@@ -22,7 +22,7 @@
                         </span>
                     </a>
                 </div>
-                <a asp-controller="Product" asp-action="Index" class="logo c-base-blue">
+                <a asp-controller="Product" asp-action="ProductQueryResult" class="logo c-base-blue">
                     <img src="~/img/changing_logo.png" alt="CGlogo" class="mx-auto d-block">
                     <p>全景產品管理後台</p>
                 </a>
