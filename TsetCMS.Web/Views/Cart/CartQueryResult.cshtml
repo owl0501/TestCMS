@@ -14,7 +14,7 @@
                 出貨清單
             </a>
         </div>
-        
+
         <form asp-controller="Cart">
             <div class="cart-container">
                 @foreach (var item in Model)
@@ -34,18 +34,18 @@
                             </div>
 
                             <div class="btn-group me-4" role="group" aria-label="Basic outlined example">
-                                <a asp-action="UpdateAmount" asp-route-pId=@item.ProductId asp-route-mode="decrease"
+                                <a asp-action="CartItemAmountUpdate" asp-route-id=@item.Id asp-route-mode="decrease"
                                    class="btn btn-outline-dark shadow-none">
                                     <i class="bi bi-dash"></i>
                                 </a>
                                 <button type="button" class="btn btn-outline-dark text-part">@item.Amount</button>
-                                <a asp-action="UpdateAmount" asp-route-pId=@item.ProductId asp-route-mode="increase"
+                                <a asp-action="CartItemAmountUpdate" asp-route-id=@item.Id asp-route-mode="increase"
                                    class="btn btn-outline-dark shadow-none">
                                     <i class="bi bi-plus"></i>
                                 </a>
                             </div>
                             <a onclick="return confirm('你確定要刪除嗎?')"
-                               asp-action="RemoveItem" asp-route-id=@item.Id class="btn btn-del">刪除</a>
+                               asp-action="CartItemDelete" asp-route-id=@item.Id class="btn btn-del">刪除</a>
                         </div>
                     }
                 }

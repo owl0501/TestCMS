@@ -6,6 +6,9 @@ using TestCMS.Business.Abstract;
 using TestCMS.Entity.Entity;
 using TestCMS.DataAccess.Abstract;
 using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 
 namespace TestCMS.Business.Concrete
 {
@@ -14,50 +17,83 @@ namespace TestCMS.Business.Concrete
         /// <summary>
         /// 建構子DI
         /// </summary>
-        private readonly ICartRepo _repo;
+        private readonly IGeneralRepo<CartTable> _cartRepo;
+        
         public CartService(IServiceProvider provider)
         {
-            _repo = provider.GetRequiredService<ICartRepo>();
+            _cartRepo = provider.GetRequiredService<IGeneralRepo<CartTable>>();
         }
 
-        public bool CartAdd(CartTable cart)
+
+        public IEnumerable<CartTable> Get()
         {
-            bool isOK = true;
+            return _cartRepo.Filter();
+        }
+        public int CreateCartItem(int productId)
+        {
+            int cartId = -1;
             try
             {
                 //若存在修改+1,否則新增
-                var data = _repo.Get(cart.Id);
-                if (data != null)
+                var cartItem = _cartRepo.Filter(d => d.ProductId == productId).FirstOrDefault();
+                if (cartItem != null)
                 {
-                    _repo.Update(cart);
+                    cartItem.Amount++;
+                    cartId = (int)_cartRepo.Update(cartItem);
                 }
                 else
                 {
-                    _repo.Create(cart);
+                    CartTable newItem = new CartTable
+                    {
+                        ProductId = productId,
+                        Amount = 1,
+                    };
+                    cartId = (int)_cartRepo.Create(newItem);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                isOK = false;
                 throw ex;
             }
-            
-            return isOK;
+
+            return cartId;
         }
 
-        public Task Delete(int id)
+        public int UpdateItemAmount(int cartId,string mode)
         {
-            return _repo.Delete(id);
+            var item = _cartRepo.Filter(d => d.Id == cartId).FirstOrDefault();
+            if (item != null)
+            {
+                if (mode == "increase")
+                {
+                    item.Amount++;
+                }
+                else if (item.Amount > 1)
+                {
+                    item.Amount--;
+                }
+            }
+            return (int)_cartRepo.Update(item); ;
         }
 
-        public Task<IList<CartTable>> Get()
+        public void Delete(int cartId)
         {
-            return _repo.Get();
+            var item = _cartRepo.Filter(d => d.Id == cartId).FirstOrDefault();
+            _cartRepo.Delete(item);
         }
 
-        public Task Update(CartTable cart)
+        public int CartAmoutToViewData()
         {
-            throw new NotImplementedException();
+            int totalAmout = 0;
+            var items = _cartRepo.Filter(d=>d.ShipStatus=="no");
+
+            foreach (var item in items)
+            {
+                totalAmout += item.Amount;
+            }
+            return totalAmout;
         }
+
+
     }
 }

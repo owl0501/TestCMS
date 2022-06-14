@@ -15,100 +15,47 @@ namespace TsetCMS.Web.Controllers
 {
     public class CartController : Controller
     {
-        private readonly CMSDBContext _context;
         private readonly ICategoryService _categoryService;
+        private readonly IProductService _productService;
+        private readonly ICartService _cartService;
         private readonly ILogger<ProductController> _logger;
         public int CartAmount = 0;
-        public CartController(CMSDBContext context, ILogger<ProductController> logger, IWebHostEnvironment env, IServiceProvider provider)
+        public CartController(ILogger<ProductController> logger, IWebHostEnvironment env, IServiceProvider provider)
         {
-
-            _context = context;
             _logger = logger;
             _categoryService = provider.GetService<ICategoryService>();
+            _cartService = provider.GetService<ICartService>();
+            _productService = provider.GetService<IProductService>();
         }
 
         [HttpGet]
-        public async Task<IActionResult> CartIndex()
+        public IActionResult CartQueryResult()
         {
-            var result = from data in _context.CartTable.Include(p => p.Product) select data;
-            var categoryQuery = await _categoryService.Get();
-
-            CartAmoutToViewData();
-            return View(result);
+            var items = _cartService.Get();
+            _productService.Get().ToList();
+            _categoryService.Get().ToList();
+            ViewData["CartAmount"] = _cartService.CartAmoutToViewData();
+            return View(items);
         }
 
-        public async Task<IActionResult> CartAdd(int pId)
+        public IActionResult CartItemAdd(int productId)
         {
-            var result = _context.CartTable.FirstOrDefault(x => x.ProductId == pId && x.ShipStatus=="no");
-            if (result != null)
-            {
-                //update
-                result.Amount++;
-                _context.CartTable.Update(result);
-                await _context.SaveChangesAsync();
-            }
-            else
-            {
-                //add
-                CartTable c = new CartTable
-                {
-                    ProductId = pId,
-                    Amount = 1,
-                };
-                _context.CartTable.Add(c);
-                await _context.SaveChangesAsync();
-            }
-
-            return RedirectToAction("Index","Product");
+            int cartId = _cartService.CreateCartItem(productId);
+            return RedirectToAction("ProductQueryResult","Product");
         }
 
-        public async Task<IActionResult> RemoveItem(int id)
+        public IActionResult CartItemDelete(int id)
         {
-            var item = await _context.CartTable.FindAsync(id);
-            _context.CartTable.Remove(item);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("CartIndex");
+            _cartService.Delete(id);
+            return RedirectToAction("CartQueryResult");
         }
 
 
-        public async Task<IActionResult> UpdateAmount(int pId,string mode)
+        public IActionResult CartItemAmountUpdate(int id,string mode)
         {
-            var result = _context.CartTable.FirstOrDefault(x => x.ProductId == pId);
-            if (result != null)
-            {
-                if (mode == "increase")
-                {
-                    result.Amount++;
-                }
-                else if (result.Amount > 1)
-                {
-                    result.Amount--;
-                }
-                
-                _context.CartTable.Update(result);
-                await _context.SaveChangesAsync();
-            }
-            return RedirectToAction("CartIndex");
+            int cartId = _cartService.UpdateItemAmount(id, mode);
+            return RedirectToAction("CartQueryResult");
         }
-        public IActionResult Shipping()
-        {
-            return View();
-        }
-
-        /// <summary>
-        /// 傳amount to View
-        /// </summary>
-        public void CartAmoutToViewData()
-        {
-            var cartQuery = _context.CartTable.ToList();
-            var cartItem = cartQuery.Where(d => d.ShipStatus == "no");
-            foreach (var item in cartItem)
-            {
-                CartAmount += item.Amount;
-            }
-            ViewData["CartAmount"] = CartAmount;
-        }
-
 
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,24 +13,29 @@ namespace TestCMS.Business.Abstract
         /// 查詢所有項目
         /// </summary>
         /// <returns></returns>
-        Task<IList<CartTable>> Get();
+        IEnumerable<CartTable> Get();
         /// <summary>
-        /// 新增資料
+        /// 加入待出貨清單
         /// </summary>
-        /// <param name="category"></param>
+        /// <param name="productId"></param>
         /// <returns></returns>
-        bool CartAdd(CartTable cart);
+        int CreateCartItem(int productId);
         /// <summary>
-        /// 刪除資料
+        /// 刪除待出貨商品
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task Delete(int id);
+        void Delete(int id);
         /// <summary>
         /// 更新資料
         /// </summary>
         /// <param name="cart"></param>
         /// <returns></returns>
-        Task Update(CartTable cart);
+        int UpdateItemAmount(int cartId, string mode);
+        /// <summary>
+        /// 傳amount to View
+        /// </summary>
+        /// <returns></returns>
+        int CartAmoutToViewData();
     }
 }
