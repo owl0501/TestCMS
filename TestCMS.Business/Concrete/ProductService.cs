@@ -15,33 +15,21 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace TestCMS.Business.Concrete
 {
-    public class ProductService : ControllerBase,IProductService
+    public class ProductService : ControllerBase, IProductService
     {
 
         private readonly IGeneralRepo<ProductTable> _productRepo;
+        private readonly ICategoryService _categoryService;
         public ProductService(IServiceProvider provider)
         {
             _productRepo = provider.GetRequiredService<IGeneralRepo<ProductTable>>();
+            _categoryService = provider.GetRequiredService<ICategoryService>();
         }
 
-        public int CreateProduct(ProductTable product, IFormFile file, string rootPath)
+        public int CreateProduct(ProductTable product, IFormFile image, string rootPath)
         {
-            //另存圖片路徑
-            string saveFolder = @"\UploadFolder\";
-            string altPath = rootPath + saveFolder;
-
-            if (!Directory.Exists(altPath))
-            {
-                DirectoryInfo imgFolder = Directory.CreateDirectory(altPath);
-            }
-            //另存圖片
-            using (var stream = new FileStream(altPath + file.FileName, FileMode.Create))
-            {
-                file.CopyTo(stream);
-            }
-
             //設定資料
-            product.Image = saveFolder + file.FileName;
+            product.Image = SaveImage(rootPath, image);
             product.ReleaseDatetime = DateTime.Now;
             //SupplyStatus
             return (int)_productRepo.Create(product);
@@ -49,7 +37,7 @@ namespace TestCMS.Business.Concrete
 
         public IEnumerable<ProductTable> Get()
         {
-
+            _categoryService.Get().ToList();
             return _productRepo.Filter();
         }
 
@@ -60,15 +48,16 @@ namespace TestCMS.Business.Concrete
 
         public object GetEditData(int? id)
         {
-            var product = _productRepo.Filter(d=>d.Id==id).FirstOrDefault();
+            _categoryService.Get().ToList();
+            var product = _productRepo.Filter(d => d.Id == id).FirstOrDefault();
             return product;
         }
 
-        public IActionResult Update(ProductTable product)
+        public IActionResult Update(ProductTable product, IFormFile image, string rootPath)
         {
-            if (!product.Image.Contains("UploadFolder"))
+            if (image != null)
             {
-                product.Image = ImageHelper.SaveImagePath(product.Image);
+                product.Image = SaveImage(rootPath, image);
             }
             _productRepo.Update(product);
             return Ok();
@@ -78,5 +67,29 @@ namespace TestCMS.Business.Concrete
         {
             return _productRepo.Filter().Any(d => d.Id == id);
         }
+
+        public string SaveImage(string rootPath, IFormFile image)
+        {
+            //另存圖片路徑
+            string saveFolder = @"\UploadFolder\";
+            string altPath = rootPath + saveFolder;
+            string fullPath = altPath + image.FileName;
+            if (!Directory.Exists(altPath))
+            {
+                Directory.CreateDirectory(altPath);
+            }
+            //檢查是否存在
+            if (!System.IO.File.Exists(fullPath))
+            {
+                //另存圖片
+                using (var stream = new FileStream(fullPath, FileMode.Create))
+                {
+                    image.CopyTo(stream);
+                }
+            }
+
+            return saveFolder + image.FileName;
+        }
+
     }
 }

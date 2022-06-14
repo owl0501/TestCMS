@@ -27,7 +27,7 @@ namespace TsetCMS.Web.Controllers
         private readonly ICategoryService _categoryService;
         //private readonly ICartService _cartService;
         private readonly ILogger<ProductController> _logger;
-        private readonly string _fodler;
+        private readonly string _wwwroot;
         public int CartAmount = 0;
         public ProductController(CMSDBContext context, ILogger<ProductController> logger, IWebHostEnvironment env, IServiceProvider provider)
         {
@@ -36,19 +36,18 @@ namespace TsetCMS.Web.Controllers
             _productService = provider.GetRequiredService<IProductService>();
             _categoryService = provider.GetService<ICategoryService>();
             //_cartService = provider.GetService<ICartService>();
-            // 預設上傳目錄下(wwwroot\UploadFolder)
-            _fodler = $@"{env.WebRootPath}";
+            // 預設上傳目錄下(wwwroot)
+            _wwwroot = $@"{env.WebRootPath}";
 
-            
+
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string searchStr, string currentFilter,int? pageNumber)
+        public IActionResult ProductQueryResult(string searchStr, string currentFilter, int? pageNumber)
         {
-            var productQuery = await _productService.Get();
-            var categoryQuery = await _categoryService.Get();
-
             CartAmoutToViewData();
+            var productQuery = _productService.Get();
+
             if (searchStr != null)
             {
                 pageNumber = 1;
@@ -57,116 +56,100 @@ namespace TsetCMS.Web.Controllers
             {
                 searchStr = currentFilter;
             }
-            //
+            //紀錄查詢字串
             ViewData["CurrentFilter"] = searchStr;
-            //
+
             if (searchStr != null)
             {
                 productQuery = productQuery.Where(data => data.Category.Name == searchStr).ToList();
             }
             //
             IList<ProductDataVM> pvm = new List<ProductDataVM>();
-            foreach(var item in productQuery)
+            foreach (var item in productQuery)
             {
                 pvm.Add(new ProductDataVM
                 {
-                    Product=item,
+                    Product = item,
                     IsNew = DateTime.Now.Subtract(item.ReleaseDatetime).Days <= 14,
                 });
             }
 
             var pq = pvm.AsQueryable();
             int pageSize = 4;
-            var tmp = PaginatedList<ProductDataVM>.CreateAsync(pq.AsNoTracking(), pageNumber ?? 1, pageSize);
-            
-            
-            
-            ViewData["Categories"] = categoryQuery.ToList();
+            var tmp = PaginatedList<ProductDataVM>.CreatePage(pq.AsNoTracking(), pageNumber ?? 1, pageSize);
+
+            ViewData["Categories"] = _categoryService.Get().ToList();
             return View(tmp);
         }
 
         [HttpGet]
-        public IActionResult ProductAdd()
+        public IActionResult ProductItemCreate()
         {
             CartAmoutToViewData();
-            //傳Categories model給create view
-            ViewData["Categories"] = new SelectList(_context.Set<CategoryTable>(), "Id", "Name");
+            ViewData["Categories"] = new SelectList(_categoryService.Get(), "Id", "Name");
             return View();
         }
-        /// <summary>
-        /// 新增產品
-        /// </summary>
-        /// <param name="product"></param>
-        /// <param name="myimg"></param>
-        /// <returns></returns>
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ProductAdd(ProductTable product, IFormFile myimg)
+        public IActionResult ProductItemCreate(ProductTable product, IFormFile myimg)
         {
-            //IFormFile name對應input type=file的name屬性)
             if (ModelState.IsValid)
             {
                 if (myimg != null)
                 {
-                    await _productService.CreateProduct(product, myimg, _fodler);
-                    return RedirectToAction(nameof(Index));
+                    _productService.CreateProduct(product, myimg, _wwwroot);
+                    return RedirectToAction(nameof(ProductQueryResult));
                 }
             }
-            var t = _context.Set<CategoryTable>();
-            ViewData["Categories"] = new SelectList(_context.Set<CategoryTable>(), "Id", "Name", product.CategoryId);
+            ViewData["Categories"] = new SelectList(_categoryService.Get(), "Id", "Name", product.CategoryId);
             return View(product);
         }
 
         [HttpGet]
-        public async Task<IActionResult> ProductEdit(int? id)
+        public IActionResult ProductItemEdit(int? id)
         {
             CartAmoutToViewData();
             if (id == null)
             {
                 return NotFound();
             }
-
-            var p = await _context.ProductTable.FindAsync(id);
-            if (p == null)
+            var result = _productService.GetEditData(id);
+            if (result != null)
             {
-                return NotFound();
+                ////傳Categories model給create view
+                ViewData["Categories"] = new SelectList(_categoryService.Get(), "Id", "Name");
+                return View(result);
             }
-            //傳Categories model給create view
-            ViewData["Categories"] = new SelectList(_context.Set<CategoryTable>(), "Id", "Name");
-            return View(p);
+            return NotFound();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ProductEdit(int id, ProductTable product,bool isProvide)
+        public IActionResult ProductItemEdit(int id, ProductTable product, IFormFile myimg)
         {
             if (id != product.Id)
             {
                 return NotFound();
             }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    if (!product.Image.Contains("UploadFolder")){
-                        product.Image = ImageHelper.SaveImagePath(product.Image);
-                    }
-                    _context.Update(product);
-                    await _context.SaveChangesAsync();
+                    _productService.Update(product, myimg, _wwwroot);
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
-                    if (!ProductExists(product.Id))
+                    if (!_productService.ProductExists(product.Id))
                     {
                         return NotFound();
                     }
                     else
                     {
-                        throw(ex);
+                        throw (ex);
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(ProductQueryResult));
             }
             return View(product);
         }
@@ -181,61 +164,6 @@ namespace TsetCMS.Web.Controllers
             }
             ViewData["CartAmount"] = CartAmount;
         }
-        private bool ProductExists(int id)
-        {
-            return _context.ProductTable.Any(e => e.Id == id);
-        }
-        /// <summary>
-        /// 新增產品類別
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public IActionResult CategoryAdd()
-        {
-            CartAmoutToViewData();
-            return View();
-        }
-        /// <summary>
-        /// 新增產品類別
-        /// </summary>
-        /// <param name="category"></param>
-        /// <returns></returns>
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CategoryAdd(CategoryTable category)
-        {
-            string msg = "失敗";
-            if (ModelState.IsValid)
-            {
-                if (category.Name != null)
-                {
-                    try
-                    {
-                        var query = from c in _context.CategoryTable
-                                    select c;
-                        var tmp = query.Where(s => s.Name.Contains(category.Name));
-                        if (tmp.Count() <= 0)
-                        {
-                            _context.CategoryTable.Add(category);
-                            await _context.SaveChangesAsync();
-                            msg = "成功";
-                        }
-                        else
-                        {
-                            msg = "已存在";
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError("資料庫新增類別錯誤");
-                        throw (ex);
-                    }
-                }
-            }
-            ViewBag.isOK = msg;
-            return View();
-        }
-
 
     }
 }

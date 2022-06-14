@@ -8,7 +8,7 @@
         <div class="mb-4">
             <h1 class="fw-bolder c-base-blue">@Model.Name</h1>
         </div>
-        <form asp-controller="Product" asp-action="ProductEdit" enctype="multipart/form-data">
+        <form asp-controller="Product" asp-action="ProductItemEdit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger "></div>
             <div class="d-grid gap-4 fs-2">
                 <div class="row">
@@ -31,8 +31,8 @@
                     <div class="col-md-3"></div>
                     <div class="col">
                         <div class="input-group">
-                            <input asp-for="Image" id="srcImage" class="form-control bg-white" readonly />
-                            <input type="file" class="d-none form-control" id="myimg" asp-for="Image" accept=".jpg,.png,.gif,.svg">
+                            <input type="text" id="showImageUrl" class="form-control bg-white" value=@Model.Image.Split('\\').Last() readonly />
+                            <input type="file" class="d-none form-control" id="myimg" name="myimg" accept=".jpg,.png,.gif,.svg">
                             <label class="input-group-text btn submit-btn bg-dark-blue" for="myimg">選擇圖片</label>
                         </div>
                         <span asp-validation-for="Image" class="text-danger fs-6"></span>
@@ -64,6 +64,7 @@
                 <input type="hidden" asp-for="Id" />
                 <input type="hidden" asp-for="Name" />
                 <input type="hidden" asp-for="SupplyStatus" id="SupplyStatus" />
+                <input type="hidden" asp-for="Image" />
                 <input type="hidden" asp-for="ReleaseDatetime" />
 
 
@@ -82,9 +83,9 @@
         //附值Modle.Image
         $('input[type=file]').change(function (ev) {
             var p = $('input[type=file]').val();
-            $("#srcImage").val(p.split('\\').pop());
+            //alert(p);
+            $("#showImageUrl").val(p.split('\\').pop());
         })
-
     </script>
 
     <script>

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -43,7 +44,7 @@ namespace TestCMS.Business.Abstract
         /// </summary>
         /// <param name="product"></param>
         /// <returns></returns>
-        IActionResult Update(ProductTable product);
+        IActionResult Update(ProductTable product,IFormFile image,string rootPath);
 
         /// <summary>
         /// 檢查產品是否存在
