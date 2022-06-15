@@ -50,6 +50,11 @@ namespace TestCMS.DataAccess.Concrete
             _context.Set<TEntity>().Remove(entity);
             _context.SaveChanges();
         }
+        public void DeleteAll(IEnumerable<TEntity> entities)
+        {
+            _context.Set<TEntity>().RemoveRange(entities);
+            _context.SaveChanges();
+        }
 
         /// <summary>
         /// 查詢 - 全部
