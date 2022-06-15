@@ -2,7 +2,7 @@
 <div class="main">
     <div class="container">
         <table class="table">
-            <thead>
+            <thead class="c-base-blue">
                 <tr>
                     <th>
                         @Html.DisplayNameFor(model => model.ShipId)
@@ -24,7 +24,7 @@
                             @Html.DisplayFor(modelItem => item.CreateTime)
                         </td>
                         <td>
-                            <a asp-action="Complete" asp-route-shipId="@item.ShipId">完成出貨</a>
+                            <a asp-action="ShippingItemComplete" asp-route-shipCode="@item.ShipCode">完成出貨</a>
                         </td>
                     </tr>
                 }
