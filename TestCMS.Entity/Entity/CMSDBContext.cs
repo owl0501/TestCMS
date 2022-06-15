@@ -39,7 +39,7 @@ namespace TestCMS.Entity.Entity
             {
                 entity.ToTable("CartTable");
 
-                entity.Property(e => e.ShipStatus)
+                entity.Property(e => e.ShipCode)
                     .IsRequired()
                     .HasMaxLength(2)
                     .HasDefaultValueSql("('no')")
@@ -65,7 +65,7 @@ namespace TestCMS.Entity.Entity
             {
                 entity.ToTable("ProductTable");
 
-                entity.Property(e => e.Image).HasMaxLength(300);
+                entity.Property(e => e.SaveImageUrl).HasMaxLength(300);
 
                 entity.Property(e => e.Intro).HasMaxLength(1000);
 
@@ -73,7 +73,7 @@ namespace TestCMS.Entity.Entity
                     .IsRequired()
                     .HasMaxLength(20);
 
-                entity.Property(e => e.ReleaseDatetime).HasColumnType("datetime");
+                entity.Property(e => e.CreateTime).HasColumnType("datetime");
 
                 entity.Property(e => e.SupplyStatus)
                     .IsRequired()

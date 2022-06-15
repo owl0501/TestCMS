@@ -24,8 +24,8 @@ namespace TestCMS.Entity.Entity
         public int CategoryId { get; set; }
         [Display(Name = "產品圖片")]
         [Required(ErrorMessage = "產品圖片為必填欄位")]
-        public string Image { get; set; }
-        public DateTime ReleaseDatetime { get; set; }
+        public string SaveImageUrl { get; set; }
+        public DateTime CreateTime { get; set; }
         public string SupplyStatus { get; set; }
 
         public virtual CategoryTable Category { get; set; }

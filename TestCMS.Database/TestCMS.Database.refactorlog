@@ -21,4 +21,39 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="ProductId" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="afa2be94-e17e-402b-8c82-0e40736c46de" ChangeDateTime="06/14/2022 13:03:20">
+    <Property Name="ElementName" Value="[dbo].[ProductTable].[Image]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ProductTable]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="SaveImageUrl" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="2dde11d2-4441-454b-bdbe-3e444a2240ce" ChangeDateTime="06/14/2022 13:03:31">
+    <Property Name="ElementName" Value="[dbo].[ProductTable].[ReleaseDatetime]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ProductTable]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="CreateTime" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="00812f17-b32d-4889-a80f-ffecdbd0d3b4" ChangeDateTime="06/14/2022 13:03:45">
+    <Property Name="ElementName" Value="[dbo].[ProductTable].[SupplyStatus]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ProductTable]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="S" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="e61e7333-fa66-4e9f-94aa-a3ded493ffed" ChangeDateTime="06/14/2022 13:03:53">
+    <Property Name="ElementName" Value="[dbo].[ProductTable].[S]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ProductTable]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="SupplyStatus" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="2f4edb7f-ff26-468d-9a50-5a38aead16ec" ChangeDateTime="06/14/2022 13:04:19">
+    <Property Name="ElementName" Value="[dbo].[CartTable].[ShipStatus]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[CartTable]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="ShipCode" />
+  </Operation>
 </Operations>

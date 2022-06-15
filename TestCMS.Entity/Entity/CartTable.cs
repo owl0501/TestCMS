@@ -10,7 +10,7 @@ namespace TestCMS.Entity.Entity
         public int Id { get; set; }
         public int ProductId { get; set; }
         public int Amount { get; set; }
-        public string ShipStatus { get; set; }
+        public string ShipCode { get; set; }
 
         public virtual ProductTable Product { get; set; }
     }

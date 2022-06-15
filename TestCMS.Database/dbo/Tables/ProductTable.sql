@@ -5,9 +5,9 @@ Create table ProductTable
 	Name nvarchar(20) not null,
 	Intro nvarchar(1000),
 	CategoryId int NOT null,
-	Image nvarchar(300) NOT NULL,
-	ReleaseDatetime datetime NOT NULL,
-	[SupplyStatus] NCHAR(2) NOT NULL, 
+	[SaveImageUrl] nvarchar(300) NOT NULL,
+	[CreateTime] datetime NOT NULL,
+	[SupplyStatus] NVARCHAR(2) NOT NULL, 
     primary key(Id),
 	foreign key(CategoryId) references CategoryTable(Id)
 )

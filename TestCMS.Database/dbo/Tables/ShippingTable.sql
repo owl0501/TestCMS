@@ -5,5 +5,6 @@ Create table ShippingTable
 	[ShipID] NCHAR(15) NOT NULL,
 	[CategoryId] int NOT null,
     [CreateTime] DATETIME NOT NULL,
-	foreign key(CategoryId) references CategoryTable(Id)
+	[ShipCode] NCHAR(2) NOT NULL, 
+    foreign key(CategoryId) references CategoryTable(Id)
 )
