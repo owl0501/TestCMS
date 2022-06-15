@@ -9,19 +9,20 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
+using TestCMS.Entity.DTO;
+using Microsoft.Extensions.Logging;
 
 namespace TestCMS.Business.Concrete
 {
     public class CartService : ICartService
     {
-        /// <summary>
-        /// 建構子DI
-        /// </summary>
         private readonly IGeneralRepo<CartTable> _cartRepo;
-        
-        public CartService(IServiceProvider provider)
+        private readonly ILogger<ICartService> _logger;
+
+        public CartService(ILogger<ICartService> logger, IServiceProvider provider)
         {
             _cartRepo = provider.GetRequiredService<IGeneralRepo<CartTable>>();
+            _logger = logger;
         }
 
 
@@ -50,16 +51,17 @@ namespace TestCMS.Business.Concrete
                     };
                     cartId = (int)_cartRepo.Create(newItem);
                 }
+                _logger.LogInformation($"新增成功");
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(ex.ToString());
             }
 
             return cartId;
         }
 
-        public int UpdateItemAmount(int cartId,string mode)
+        public int UpdateItemAmount(int cartId, string mode)
         {
             var item = _cartRepo.Filter(d => d.Id == cartId).FirstOrDefault();
             if (item != null)
@@ -85,7 +87,7 @@ namespace TestCMS.Business.Concrete
         public int CartAmoutToViewData()
         {
             int totalAmout = 0;
-            var items = _cartRepo.Filter(d=>d.ShipStatus=="no");
+            var items = _cartRepo.Filter(d => d.ShipCode == "no");
 
             foreach (var item in items)
             {
@@ -94,6 +96,42 @@ namespace TestCMS.Business.Concrete
             return totalAmout;
         }
 
+        public string UpdateAllByShipCode(ShippingDTO dto, string shipCode)
+        {
+            try
+            {
+                foreach (var cartId in dto.CartIdList)
+                {
+                    CartTable item = _cartRepo.Filter(d => d.Id == cartId).FirstOrDefault();
+                    if (item != null)
+                    {
+                        item.ShipCode = shipCode;
+                        _cartRepo.Update(item);
+                    }
+                }
+                return "200";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                return "415";
+            }
+        }
 
+        public string DeleteItemsByShipCode(string shipCode)
+        {
+            try
+            {
+                IEnumerable<CartTable> items = _cartRepo.Filter(d => d.ShipCode == shipCode);
+                _cartRepo.DeleteAll(items);
+                return "200";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                return "415";
+            }
+
+        }
     }
 }

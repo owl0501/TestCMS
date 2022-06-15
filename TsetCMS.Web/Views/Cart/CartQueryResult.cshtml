@@ -10,7 +10,7 @@
             <h1 class="fw-bolder c-base-blue d-inline">待出貨清單</h1>
             >
             <a class="fw-bolder"
-               asp-controller="Shipping" asp-action="ShippingListResult">
+               asp-controller="Shipping" asp-action="ShippingQueryResult">
                 出貨清單
             </a>
         </div>
@@ -19,12 +19,12 @@
             <div class="cart-container">
                 @foreach (var item in Model)
                 {
-                    @if (item.ShipStatus == "no")
+                    @if (item.ShipCode == "no")
                     {
                         <div class="cart-item shadow">
                             <input class="form-check-input mx-4" type="checkbox" name="@item.Id" value=@item.Product.Category.Id>
                             <div class="image-demo">
-                                <img class="img-thumbnail me-5 preview-img " src=@item.Product.Image>
+                                <img class="img-thumbnail me-5 preview-img " src=@item.Product.SaveImageUrl>
                             </div>
 
                             <div class="position-relative h-100 me-5">
@@ -88,11 +88,11 @@
                 @*alert('成功\n' + JSON.stringify(dto));*@
                 $.ajax({
                     type: 'POST',
-                    url: '@Url.Action("ShippingAdd", "Shipping")',
+                    url: '@Url.Action("ShippingItemCreate", "Shipping")',
                     data: JSON.stringify(dto),
                     contentType: "application/json; charset=utf-8",
                     success: function (data) {
-                        location.href = "/Shipping/ShippingListResult";
+                        location.href = "/Shipping/ShippingQueryResult";
                         @*console.log("成功\n"+data);*@
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {

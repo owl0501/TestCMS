@@ -18,11 +18,9 @@ namespace TsetCMS.Web.Controllers
         private readonly ICategoryService _categoryService;
         private readonly IProductService _productService;
         private readonly ICartService _cartService;
-        private readonly ILogger<ProductController> _logger;
         public int CartAmount = 0;
-        public CartController(ILogger<ProductController> logger, IWebHostEnvironment env, IServiceProvider provider)
+        public CartController(IServiceProvider provider)
         {
-            _logger = logger;
             _categoryService = provider.GetService<ICategoryService>();
             _cartService = provider.GetService<ICartService>();
             _productService = provider.GetService<IProductService>();

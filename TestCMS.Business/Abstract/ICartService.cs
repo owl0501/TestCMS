@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using TestCMS.Entity.DTO;
 using TestCMS.Entity.Entity;
 
 namespace TestCMS.Business.Abstract
@@ -21,17 +22,29 @@ namespace TestCMS.Business.Abstract
         /// <returns></returns>
         int CreateCartItem(int productId);
         /// <summary>
+        /// 更新資料
+        /// </summary>
+        /// <param name="cart"></param>
+        /// <returns></returns>
+        int UpdateItemAmount(int cartId, string mode);
+        /// <summary>
+        /// 更新所有對應出貨待碼商品
+        /// </summary>
+        /// <param name="shipCode"></param>
+        /// <returns></returns>
+        string UpdateAllByShipCode(ShippingDTO dto, string shipCode);
+        /// <summary>
         /// 刪除待出貨商品
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         void Delete(int id);
         /// <summary>
-        /// 更新資料
+        /// 刪除所有對應出貨代碼商品
         /// </summary>
-        /// <param name="cart"></param>
+        /// <param name="shipCode"></param>
         /// <returns></returns>
-        int UpdateItemAmount(int cartId, string mode);
+        string DeleteItemsByShipCode(string shipCode);
         /// <summary>
         /// 傳amount to View
         /// </summary>
