@@ -39,16 +39,19 @@ namespace TsetCMS.Web
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IGeneralRepo<ProductTable>, GeneralRepo<ProductTable>>();
             #endregion
-
             #region Cart Service
             services.AddScoped<ICartService, CartService>();
             services.AddScoped<IGeneralRepo<CartTable>, GeneralRepo<CartTable>>();
+            #endregion
+            #region Shipping Service
+            services.AddScoped<IShippingService, ShippingService>();
+            services.AddScoped<IGeneralRepo<ShippingTable>, GeneralRepo<ShippingTable>>();
             #endregion
 
             services.AddControllersWithViews();
             //Register dbcontext
             services.AddDbContext<CMSDBContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("CMSDBContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("TestCMSDB")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,7 +63,7 @@ namespace TsetCMS.Web
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("Error/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
