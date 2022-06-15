@@ -31,17 +31,14 @@
                 </div>
                 <!-- 圖片 -->
                 <div class="row">
-                    <label asp-for="Image" class="control-label col-md-3 redstar"></label>
+                    <label asp-for="SaveImageUrl" class="control-label col-md-3 redstar"></label>
                     <div class="col-md">
                         <div class="input-group">
-                            @*<input type="file" class="form-control" id="myimg" name="myimg" accept=".jpg,.png,.gif,.svg">
-                                <input id="imageName" type="hidden" asp-for="Image" />
-                                <label class="input-group-text btn submit-btn bg-dark-blue" for="myimg">選擇圖片</label>*@
-                            <input asp-for="Image" id="imageName" class="form-control bg-white" readonly />
+                            <input asp-for="SaveImageUrl" id="imageName" class="form-control bg-white" readonly />
                             <input type="file" class="d-none form-control" id="myimg" name="myimg" accept=".jpg,.png,.gif,.svg">
                             <label class="input-group-text btn submit-btn bg-dark-blue" for="myimg">選擇圖片</label>
                         </div>
-                        <span asp-validation-for="Image" class="text-danger fs-6"></span>
+                        <span asp-validation-for="SaveImageUrl" class="text-danger fs-6"></span>
                     </div>
                 </div>
 

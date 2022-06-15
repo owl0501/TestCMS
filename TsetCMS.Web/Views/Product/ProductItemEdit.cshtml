@@ -20,10 +20,10 @@
                 </div>
                 <!-- 圖片 -->
                 <div class="row">
-                    <label asp-for="Image" class="control-label col-md-3 redstar"></label>
+                    <label asp-for="SaveImageUrl" class="control-label col-md-3 redstar"></label>
                     <div class="col">
                         <div class="image-demo">
-                            <img id="preview" class="preview-img img-thumbnail" src=@Model.Image>
+                            <img id="preview" class="preview-img img-thumbnail" src=@Model.SaveImageUrl>
                         </div>
                     </div>
                 </div>
@@ -31,11 +31,11 @@
                     <div class="col-md-3"></div>
                     <div class="col">
                         <div class="input-group">
-                            <input type="text" id="showImageUrl" class="form-control bg-white" value=@Model.Image.Split('\\').Last() readonly />
+                            <input type="text" id="imageName" class="form-control bg-white" value=@Model.SaveImageUrl.Split('\\').Last() readonly />
                             <input type="file" class="d-none form-control" id="myimg" name="myimg" accept=".jpg,.png,.gif,.svg">
                             <label class="input-group-text btn submit-btn bg-dark-blue" for="myimg">選擇圖片</label>
                         </div>
-                        <span asp-validation-for="Image" class="text-danger fs-6"></span>
+                        <span asp-validation-for="SaveImageUrl" class="text-danger fs-6"></span>
                     </div>
                 </div>
                 <div class="row">
@@ -64,10 +64,8 @@
                 <input type="hidden" asp-for="Id" />
                 <input type="hidden" asp-for="Name" />
                 <input type="hidden" asp-for="SupplyStatus" id="SupplyStatus" />
-                <input type="hidden" asp-for="Image" />
-                <input type="hidden" asp-for="ReleaseDatetime" />
-
-
+                <input type="hidden" asp-for="SaveImageUrl" />
+                <input type="hidden" asp-for="CreateTime" />
 
                 <div class="form-group d-flex flex-row-reverse">
                     <input type="submit" value="確定" class="btn btn-lg submit-btn bg-base-blue" />
@@ -84,7 +82,7 @@
         $('input[type=file]').change(function (ev) {
             var p = $('input[type=file]').val();
             //alert(p);
-            $("#showImageUrl").val(p.split('\\').pop());
+            $("#imageName").val(p.split('\\').pop());
         })
     </script>
 
