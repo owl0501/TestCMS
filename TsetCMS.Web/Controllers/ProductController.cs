@@ -25,11 +25,9 @@ namespace TsetCMS.Web.Controllers
         private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
         private readonly ICartService _cartService;
-        private readonly ILogger<ProductController> _logger;
         private readonly string _wwwroot;
         public ProductController(ILogger<ProductController> logger, IWebHostEnvironment env, IServiceProvider provider)
         {
-            _logger = logger;
             _productService = provider.GetRequiredService<IProductService>();
             _categoryService = provider.GetService<ICategoryService>();
             _cartService = provider.GetService<ICartService>();
@@ -64,12 +62,12 @@ namespace TsetCMS.Web.Controllers
                 pvm.Add(new ProductDataVM
                 {
                     Product = item,
-                    IsNew = DateTime.Now.Subtract(item.ReleaseDatetime).Days <= 14,
+                    IsNew = DateTime.Now.Subtract(item.CreateTime).Days <= 14,
                 });
             }
 
             var pq = pvm.AsQueryable();
-            int pageSize = 4;
+            int pageSize = 6;
             var tmp = PaginatedList<ProductDataVM>.CreatePage(pq.AsNoTracking(), pageNumber ?? 1, pageSize);
 
             ViewData["Categories"] = _categoryService.Get().ToList();
@@ -97,6 +95,7 @@ namespace TsetCMS.Web.Controllers
                     return RedirectToAction(nameof(ProductQueryResult));
                 }
             }
+            ViewData["Categories"] = new SelectList(_categoryService.Get(), "Id", "Name");
             return View(product);
         }
 

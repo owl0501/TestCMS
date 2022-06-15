@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using TestCMS.Helper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace TestCMS.Business.Concrete
 {
@@ -20,17 +21,19 @@ namespace TestCMS.Business.Concrete
 
         private readonly IGeneralRepo<ProductTable> _productRepo;
         private readonly ICategoryService _categoryService;
-        public ProductService(IServiceProvider provider)
+        private readonly ILogger<IProductService> _logger;
+        public ProductService(ILogger<IProductService> logger, IServiceProvider provider)
         {
             _productRepo = provider.GetRequiredService<IGeneralRepo<ProductTable>>();
             _categoryService = provider.GetRequiredService<ICategoryService>();
+            _logger = logger;
         }
 
         public int CreateProduct(ProductTable product, IFormFile image, string rootPath)
         {
             //設定資料
-            product.Image = SaveImage(rootPath, image);
-            product.ReleaseDatetime = DateTime.Now;
+            product.SaveImageUrl = SaveImage(rootPath, image);
+            product.CreateTime = DateTime.Now;
             //SupplyStatus
             return (int)_productRepo.Create(product);
         }
@@ -57,7 +60,7 @@ namespace TestCMS.Business.Concrete
         {
             if (image != null)
             {
-                product.Image = SaveImage(rootPath, image);
+                product.SaveImageUrl = SaveImage(rootPath, image);
             }
             _productRepo.Update(product);
             return Ok();
@@ -73,22 +76,31 @@ namespace TestCMS.Business.Concrete
             //另存圖片路徑
             string saveFolder = @"\UploadFolder\";
             string altPath = rootPath + saveFolder;
-            string fullPath = altPath + image.FileName;
-            if (!Directory.Exists(altPath))
+            try
             {
-                Directory.CreateDirectory(altPath);
-            }
-            //檢查是否存在
-            if (!System.IO.File.Exists(fullPath))
-            {
-                //另存圖片
-                using (var stream = new FileStream(fullPath, FileMode.Create))
+                string fullPath = altPath + image.FileName;
+                if (!Directory.Exists(altPath))
                 {
-                    image.CopyTo(stream);
+                    Directory.CreateDirectory(altPath);
                 }
+                //檢查是否存在
+                if (!System.IO.File.Exists(fullPath))
+                {
+                    //另存圖片
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        image.CopyTo(stream);
+                    }
+                }
+                _logger.LogInformation("圖片名稱: "+image.FileName);
+                return saveFolder + image.FileName;
             }
-
-            return saveFolder + image.FileName;
+            catch(Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                return Url.Content("~/img/image-not-found.svg");
+            }
+            
         }
 
     }

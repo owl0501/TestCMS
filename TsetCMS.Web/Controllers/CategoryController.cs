@@ -13,12 +13,10 @@ namespace TsetCMS.Web.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ILogger<ProductController> _logger;
         private readonly ICategoryService _categoryService;
         private readonly ICartService _cartService;
-        public CategoryController(ILogger<ProductController> logger, IWebHostEnvironment env, IServiceProvider provider)
+        public CategoryController(ILogger<CategoryController> logger, IServiceProvider provider)
         {
-            _logger = logger;
             _categoryService = provider.GetService<ICategoryService>();
             _cartService = provider.GetService<ICartService>();
         }
@@ -37,15 +35,7 @@ namespace TsetCMS.Web.Controllers
             {
                 if (category.Name != null)
                 {
-                    try
-                    {
-                        msg = _categoryService.CreateCategory(category);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError("資料庫新增類別錯誤");
-                        throw (ex);
-                    }
+                    msg = _categoryService.CreateCategory(category);
                 }
             }
             ViewBag.isOK = msg;
