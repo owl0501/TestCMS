@@ -12,8 +12,8 @@ namespace TestCMS.DataAccess.Concrete
         where TEntity : class
     {
 
-        public readonly CMSDBContext _context;
-        public GeneralRepo(CMSDBContext context)
+        public readonly TestCMSDBContext _context;
+        public GeneralRepo(TestCMSDBContext context)
         {
             _context = context;
         }

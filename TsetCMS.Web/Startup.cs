@@ -50,7 +50,7 @@ namespace TsetCMS.Web
 
             services.AddControllersWithViews();
             //Register dbcontext
-            services.AddDbContext<CMSDBContext>(options =>
+            services.AddDbContext<TestCMSDBContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("TestCMSDB")));
         }
 
