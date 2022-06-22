@@ -1,7 +1,11 @@
 ﻿@using TestCMS.Helper;
 @model PaginatedList<TestCMS.Entity.VM.ProductDataVM>;
-
-<div class="main">
+<button id="js-hamburger" class="hamburger position-top-right" type="button">
+    <span id="js-top-line" class="top-line"></span>
+    <span id="js-center-line" class="center-line"></span>
+    <span id="js-bottom-line" class="bottom-line"></span>
+</button>
+<div class="main position-relative">
     <div class="banner bg-hint-blue">
         <h3>尋找最佳方案</h3>
         <div class="dash"></div>
@@ -11,14 +15,14 @@
         <div class="row">
             <col-12>
                 <div class="func-line">
-                    <a asp-controller="Category" asp-action="CategoryAdd" class="btn btn-lg func-btn">+新增類別</a>
+                    <a asp-controller="Category" asp-action="CategoryAdd" class="btn btn-lg func-btn invisible">+新增類別</a>
                     <a asp-action="ProductItemCreate" class="btn btn-lg func-btn ">+新增產品</a>
                 </div>
             </col-12>
         </div>
         <div class="row">
-            <div class="col-lg-2">
-                <div>
+            <div class="col-5 col-md-3">
+                <div id="nav-panel" class="nav-panel">
                     <a class="btn btn-lg sidebar-btn" asp-action="ProductQueryResult">全部產品</a>
                     @foreach (var item in ViewBag.Categories)
                     {
@@ -26,7 +30,7 @@
                     }
                 </div>
             </div>
-            <div class="col-12 col-lg-10">
+            <div class="col-12 col-md-9">
                 <div class="card-container">
                     @foreach (var item in Model)
                     {
@@ -62,7 +66,7 @@
                             @if (item.Product.SupplyStatus.Trim() == "Y")
                             {
                                 <a class="plus-btn" id=@item.Product.Id
-                                   asp-controller="Cart" asp-action="CartItemAdd" asp-route-productId=@item.Product.Id   >
+                                   asp-controller="Cart" asp-action="CartItemAdd" asp-route-productId=@item.Product.Id>
                                     <i class="bi bi-plus-circle-fill"></i>
                                 </a>
                             }
@@ -70,14 +74,14 @@
                     }
                 </div>
             </div>
-            <div class="col-lg-2"></div>
-            <div class="col-12 col-lg-10">
+            <div class="col-md-3"></div>
+            <div class="col-12 col-md-9">
                 @{
                     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
                     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
                 }
 
-                <div class="text-center">
+                <div class="text-center small-hidden">
                     <a asp-action="ProductQueryResult"
                        asp-route-pageNumber="@(Model.PageIndex - 1)"
                        asp-route-currentFilter="@ViewData["CurrentFilter"]"
@@ -96,3 +100,34 @@
     </div>
 </div>
 
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $(".cross").hide();
+            $(".menu").hide();
+            $(".hamburger").click(function () {
+                $(".menu").slideToggle("slow", function () {
+                    $(".hamburger").hide();
+                    $(".cross").show();
+                });
+            });
+            $(".cross").click(function () {
+                $(".menu").slideToggle("slow", function () {
+                    $(".cross").hide();
+                    $(".hamburger").show();
+                });
+            });
+        });
+    </script>
+
+    <script>
+        $("#js-hamburger").click(function () {
+            //this.style.backgroundColor = "var(--base-gray)";
+            $(this).toggleClass("active");
+            $("#js-top-line").toggleClass("active");
+            $("#js-center-line").toggleClass("active");
+            $("#js-bottom-line").toggleClass("active");
+            $("#nav-panel").toggleClass("show");
+        });
+    </script>
+}
