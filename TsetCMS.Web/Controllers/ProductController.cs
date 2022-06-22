@@ -120,7 +120,7 @@ namespace TsetCMS.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult ProductItemEdit(int id, ProductTable product, IFormFile myimg)
+        public IActionResult ProductItemEdit(int id, ProductTable product, IFormFile? myimg)
         {
             if (id != product.Id)
             {
@@ -145,6 +145,7 @@ namespace TsetCMS.Web.Controllers
                 }
                 return RedirectToAction(nameof(ProductQueryResult));
             }
+            ViewData["Categories"] = new SelectList(_categoryService.Get(), "Id", "Name");
             return View(product);
         }
     }
