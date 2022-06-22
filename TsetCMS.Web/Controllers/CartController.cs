@@ -18,7 +18,6 @@ namespace TsetCMS.Web.Controllers
         private readonly ICategoryService _categoryService;
         private readonly IProductService _productService;
         private readonly ICartService _cartService;
-        public int CartAmount = 0;
         public CartController(IServiceProvider provider)
         {
             _categoryService = provider.GetService<ICategoryService>();

@@ -90,7 +90,7 @@
         //前端顯示圖片
         $('#myimg').on('change', function (ev) {
             const file = this.files[0];
-            console.log(file);
+            //console.log(file);
             // 使用 createObjectURL 產生圖片url
             const objectURL = URL.createObjectURL(file);
             $('#preview').attr('src', objectURL);
@@ -100,7 +100,7 @@
     <script>
         //Modle.SupplyStatus附值
         $('#ckbox').on('click', function (ev) {
-            console.log($(this).prop("checked"));
+            //console.log($(this).prop("checked"));
             $('#SupplyStatus').val(($(this).prop("checked")) ? 'Y' : 'N');
         });
     </script>
