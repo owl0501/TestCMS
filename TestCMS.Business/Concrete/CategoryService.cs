@@ -40,5 +40,31 @@ namespace TestCMS.Business.Concrete
         {
             return _repo.Filter().Any(d => d.Name == name);
         }
+
+        public void SetSeedData()
+        {
+
+            if (!_repo.Filter().Any())
+            {
+                IList<CategoryTable> data = new List<CategoryTable>();
+                data.Add(new CategoryTable
+                {
+                    Name = "身分認證"
+                });
+                data.Add(new CategoryTable
+                {
+                    Name = "電子簽章"
+                });
+                data.Add(new CategoryTable
+                {
+                    Name = "智慧文件"
+                });
+                foreach (var item in data)
+                {
+                    _repo.Create(item);
+                }
+            }
+            
+        }
     }
 }

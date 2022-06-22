@@ -13,7 +13,6 @@ namespace TestCMS.Business.Abstract
         /// <returns></returns>
         IEnumerable<CategoryTable> Get();
 
-
         /// <summary>
         /// 新增類別
         /// </summary>
@@ -21,12 +20,15 @@ namespace TestCMS.Business.Abstract
         /// <returns></returns>
         string CreateCategory(CategoryTable category);
 
-        
         /// <summary>
         /// 檢查類型是否存在
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
         bool CategoryExists(string name);
+        /// <summary>
+        /// 初始化類別資料
+        /// </summary>
+        void SetSeedData();
     }
 }
